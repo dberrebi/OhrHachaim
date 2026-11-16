@@ -39,8 +39,12 @@ struct ReadingView: View {
     @Environment(CommentaryStore.self) private var store
     @Environment(UserLibrary.self) private var library
     @Environment(\.colorScheme) private var scheme
+    @State private var blocks: [ReadingBlock] = []
     @State private var allowTracking = false
     @State private var trackedCommentID: Int?
+    @State private var initialTopID: Int?
+    @State private var initialMarkedAt = Date()
+    @State private var dwell: Task<Void, Never>?
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -58,15 +62,16 @@ struct ReadingView: View {
             .coordinateSpace(name: "reading")
             .background(Theme.background(scheme))
             .onPreferenceChange(ReadingAnchorKey.self) { anchors in
-                guard allowTracking else { return }
-                let nearTop = anchors.filter { $0.minY >= -8 && $0.minY < 140 }
-                let pick = nearTop.min { $0.minY < $1.minY }
-                guard let pick, pick.id != trackedCommentID, let comment = store.comment(id: pick.id) else { return }
-                trackedCommentID = pick.id
-                library.note(comment)
+                noteVisibleComment(anchors)
             }
             .onAppear {
+                if blocks.isEmpty {
+                    blocks = makeBlocks()
+                }
                 restore(using: proxy)
+            }
+            .onDisappear {
+                dwell?.cancel()
             }
         }
         .studyBar(title: navigationTitle)
@@ -93,7 +98,6 @@ struct ReadingView: View {
 
     @ViewBuilder
     private var blocksView: some View {
-        let blocks = makeBlocks()
         if blocks.isEmpty {
             Text(L10n.text("reading.empty", settings.language))
                 .font(Theme.menuFont(settings.language))
@@ -179,7 +183,6 @@ struct ReadingView: View {
             .lineSpacing(settings.commentarySize * 0.38)
             .multilineTextAlignment(.leading)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .textSelection(.enabled)
             .environment(\.layoutDirection, .rightToLeft)
             .accessibilityLabel(spoken)
         }
@@ -198,7 +201,7 @@ struct ReadingView: View {
                 )
             }
             Button {
-                UIPasteboard.general.string = HebrewText.plain(comment.body, stripNikud: !settings.showNikud)
+                UIPasteboard.general.string = passageShareText(comment)
             } label: {
                 Label(L10n.text("action.copy", settings.language), systemImage: "doc.on.doc")
             }
@@ -230,9 +233,32 @@ struct ReadingView: View {
     }
 
     private func verseHeading(chapter: Int, verse: Int) -> String {
-        let chapterText = settings.language == .he ? HebrewNumerals.string(chapter) : String(chapter)
-        let verseText = settings.language == .he ? HebrewNumerals.string(verse) : String(verse)
-        return String(format: L10n.text("reading.place", settings.language), chapterText, verseText)
+        HebrewText.citation(chapter: chapter, verse: verse, language: settings.language)
+    }
+
+    /// Opening a parasha does not replace the saved place. A scroll, or staying to read, does.
+    private func noteVisibleComment(_ anchors: [ReadingAnchor]) {
+        guard allowTracking else { return }
+        let nearTop = anchors.filter { $0.minY >= -8 && $0.minY < 140 }
+        guard let pick = nearTop.min(by: { $0.minY < $1.minY }),
+              let comment = store.comment(id: pick.id) else { return }
+        if initialTopID == nil {
+            initialTopID = pick.id
+            initialMarkedAt = Date()
+            dwell?.cancel()
+            dwell = Task { @MainActor in
+                try? await Task.sleep(nanoseconds: 2_000_000_000)
+                guard !Task.isCancelled, trackedCommentID == nil else { return }
+                trackedCommentID = comment.id
+                library.note(comment)
+            }
+            return
+        }
+        let moved = pick.id != initialTopID && Date().timeIntervalSince(initialMarkedAt) > 0.35
+        guard moved, pick.id != trackedCommentID else { return }
+        dwell?.cancel()
+        trackedCommentID = pick.id
+        library.note(comment)
     }
 
     private func anchor(for id: Int) -> some View {
@@ -311,14 +337,13 @@ struct ReadingView: View {
             return String(format: L10n.text("share.intro", settings.language), plain)
         }
         let book = store.book(id: comment.bookID)?.name(for: settings.language) ?? ""
-        let chapter = settings.language == .he ? HebrewNumerals.string(comment.chapter) : String(comment.chapter)
-        let verse = settings.language == .he ? HebrewNumerals.string(comment.verse) : String(comment.verse)
+        let parashaName = comment.parashaID.flatMap { store.parasha(id: $0)?.name(for: settings.language) } ?? ""
         return String(
             format: L10n.text("share.passage", settings.language),
             book,
-            navigationTitle,
-            chapter,
-            verse,
+            parashaName,
+            HebrewText.number(comment.chapter, language: settings.language),
+            HebrewText.number(comment.verse, language: settings.language),
             plain
         )
     }

@@ -24,7 +24,9 @@ xcodebuild \
 
 In Xcode, choose an iPhone or iPad simulator and run. The first screen is a full-width list: resume, history, this week's parasha, the five books, settings, help, and about.
 
-GitHub Actions (`.github/workflows/ios.yml`) builds and tests the same way on a macOS runner, with code signing disabled, and uploads a simulator screenshot of the home screen. A pull request from this repository is covered by the branch push, so the workflow does not start a second macOS run for it.
+GitHub Actions (`.github/workflows/ios.yml`) builds and tests the same way on a macOS runner, with code signing disabled. The tests include an iPhone check that tapping בראשית opens its parasha list. The run uploads screenshots of that list and of the home screen. A pull request from this repository is covered by the branch push, so the workflow does not start a second macOS run for it.
+
+The in-app language changes the interface strings, the layout direction, and date formatting immediately. The name on the device Home Screen, some system sheets, and the VoiceOver language stay on the device language.
 
 ## Screens
 

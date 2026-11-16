@@ -3,13 +3,41 @@ import SwiftUI
 struct RootView: View {
     @Environment(CommentaryStore.self) private var store
     @Environment(\.colorScheme) private var scheme
+    @Environment(\.horizontalSizeClass) private var sizeClass
     @State private var selection: SidebarItem?
     @State private var path = NavigationPath()
 
     var body: some View {
+        Group {
+            if sizeClass == .regular {
+                split
+            } else {
+                stack
+            }
+        }
+        .background(Theme.background(scheme).ignoresSafeArea())
+    }
+
+    /// iPhone, and any compact width: a stack. Each tap appends, including the same row after Back.
+    private var stack: some View {
+        NavigationStack(path: $path) {
+            HomeView { path.append($0) }
+                .navigationDestination(for: SidebarItem.self) { item in
+                    destination(item)
+                }
+                .navigationDestination(for: ReadingRoute.self) { route in
+                    ReadingView(route: route)
+                }
+        }
+    }
+
+    /// iPad: the sidebar selection drives the detail column.
+    private var split: some View {
         NavigationSplitView {
-            HomeView(selection: $selection)
-                .navigationSplitViewColumnWidth(min: 280, ideal: 340, max: 420)
+            HomeView { item in
+                selection = item
+            }
+            .navigationSplitViewColumnWidth(min: 280, ideal: 340, max: 420)
         } detail: {
             NavigationStack(path: $path) {
                 detail
@@ -19,7 +47,6 @@ struct RootView: View {
             }
         }
         .navigationSplitViewStyle(.balanced)
-        .background(Theme.background(scheme).ignoresSafeArea())
         .onChange(of: selection) { _, _ in
             path = NavigationPath()
         }
@@ -30,7 +57,18 @@ struct RootView: View {
         if store.loadError != nil {
             MissingTextView()
         } else if let selection {
-            switch selection {
+            destination(selection)
+        } else {
+            WelcomeView()
+        }
+    }
+
+    @ViewBuilder
+    private func destination(_ item: SidebarItem) -> some View {
+        if store.loadError != nil {
+            MissingTextView()
+        } else {
+            switch item {
             case .resume:
                 ResumeView()
             case .history:
@@ -48,8 +86,6 @@ struct RootView: View {
             case .favourites:
                 FavouritesView(path: $path)
             }
-        } else {
-            WelcomeView()
         }
     }
 }
@@ -124,7 +160,7 @@ struct CenteredMenuRow: View {
     }
 
     private var subtitleFont: Font {
-        if settings.language == .he || (subtitle?.unicodeScalars.contains { (0x0590...0x05FF).contains($0.value) } ?? false) {
+        if settings.language == .he || HebrewText.containsHebrew(subtitle ?? "") {
             return .custom(Theme.hebrewFamily, size: 15, relativeTo: .footnote)
         }
         return .footnote

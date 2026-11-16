@@ -74,6 +74,19 @@ enum SidebarItem: Hashable {
     case help
     case about
     case favourites
+
+    var accessibilityID: String {
+        switch self {
+        case .resume: return "home.resume"
+        case .history: return "home.history"
+        case .weekly: return "home.weekly"
+        case .book(let id): return "home.book.\(id)"
+        case .settings: return "home.settings"
+        case .help: return "home.help"
+        case .about: return "home.about"
+        case .favourites: return "home.favourites"
+        }
+    }
 }
 
 enum ReadingRoute: Hashable {

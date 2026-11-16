@@ -1,19 +1,22 @@
 import Foundation
+import Observation
 import SQLite3
 
 @MainActor
 @Observable
 final class CommentaryStore {
-    private var database: OpaquePointer?
+    @ObservationIgnored private var database: OpaquePointer?
     private(set) var books: [Book] = []
     private(set) var parashot: [Parasha] = []
     private(set) var weekly: [WeeklyReading] = []
     private(set) var meta: [String: String] = [:]
     private(set) var loadError: String?
 
-    private var commentsByParasha: [Int: [Comment]] = [:]
-    private var introductionCache: [Comment]?
-    private var gapsByParasha: [Int: [Int]] = [:]
+    @ObservationIgnored private var commentsByParasha: [Int: [Comment]] = [:]
+    @ObservationIgnored private var introductionCache: [Comment]?
+    @ObservationIgnored private var gapsByParasha: [Int: [Int]] = [:]
+    @ObservationIgnored private var readingCacheKey: String?
+    @ObservationIgnored private var readingCacheValue: WeeklyReading?
 
     private static let isoFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -117,21 +120,16 @@ final class CommentaryStore {
             return L10n.text("book.introduction", language)
         }
         let parashaName = comment.parashaID.flatMap { parasha(id: $0)?.name(for: language) } ?? ""
-        let chapter = language == .he ? HebrewNumerals.string(comment.chapter) : String(comment.chapter)
-        let verse = language == .he ? HebrewNumerals.string(comment.verse) : String(comment.verse)
-        let place = String(
-            format: L10n.text("reading.place", language),
-            chapter,
-            verse
-        )
+        let place = HebrewText.citation(chapter: comment.chapter, verse: comment.verse, language: language)
         if parashaName.isEmpty { return place }
         return "\(parashaName) · \(place)"
     }
 
     func formattedDate(_ iso: String, language: AppLanguage) -> String {
-        guard let date = Self.isoFormatter.date(from: iso) else { return iso }
+        guard let date = date(fromISO: iso) else { return iso }
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: language.localeIdentifier)
+        formatter.timeZone = .current
         formatter.dateStyle = .medium
         formatter.timeStyle = .none
         return formatter.string(from: date)
@@ -140,30 +138,49 @@ final class CommentaryStore {
     /// The reading for "this week": today's reading, otherwise the one coming
     /// within six days, otherwise the most recent reading in the last ten days.
     func currentReading(israel: Bool, now: Date = Date()) -> WeeklyReading? {
+        let todayISO = isoDay(now)
+        let key = "\(todayISO)#\(israel ? 1 : 0)"
+        if key == readingCacheKey {
+            return readingCacheValue
+        }
+        let value = resolveReading(israel: israel, todayISO: todayISO)
+        readingCacheKey = key
+        readingCacheValue = value
+        return value
+    }
+
+    private func resolveReading(israel: Bool, todayISO: String) -> WeeklyReading? {
         let calendar = Calendar(identifier: .gregorian)
-        let today = calendar.startOfDay(for: now)
-        let todayISO = Self.isoFormatter.string(from: today)
-        let rows = weekly
-            .filter { $0.israel == israel }
-            .sorted { $0.date < $1.date }
+        guard let today = date(fromISO: todayISO) else { return nil }
+        let rows = weekly.filter { $0.israel == israel }
         if let exact = rows.first(where: { $0.date == todayISO }) {
             return exact
         }
         if let upcoming = rows.first(where: { row in
-            guard let date = Self.isoFormatter.date(from: row.date) else { return false }
+            guard let date = date(fromISO: row.date) else { return false }
             let days = calendar.dateComponents([.day], from: today, to: date).day ?? 99
             return days > 0 && days <= 6
         }) {
             return upcoming
         }
         if let recent = rows.reversed().first(where: { row in
-            guard let date = Self.isoFormatter.date(from: row.date) else { return false }
+            guard let date = date(fromISO: row.date) else { return false }
             let days = calendar.dateComponents([.day], from: date, to: today).day ?? 99
             return days > 0 && days <= 10
         }) {
             return recent
         }
         return nil
+    }
+
+    private func isoDay(_ date: Date) -> String {
+        Self.isoFormatter.timeZone = .current
+        return Self.isoFormatter.string(from: date)
+    }
+
+    private func date(fromISO iso: String) -> Date? {
+        Self.isoFormatter.timeZone = .current
+        return Self.isoFormatter.date(from: iso)
     }
 
     func readingCoversToday(_ now: Date = Date()) -> Bool {

@@ -41,7 +41,8 @@ struct SettingsView: View {
                         emphasisColor: Theme.emphasis(scheme)
                     ))
                     .lineSpacing(6)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .environment(\.layoutDirection, .rightToLeft)
                 }
                 .padding(.vertical, 4)
@@ -78,10 +79,10 @@ struct HelpView: View {
                 .font(.body)
                 .foregroundStyle(Theme.text(scheme))
                 .lineSpacing(6)
-                .frame(maxWidth: 720, alignment: settings.language == .he ? .trailing : .leading)
-                .frame(maxWidth: .infinity)
+                .frame(maxWidth: 720, alignment: .leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(22)
-                .multilineTextAlignment(settings.language == .he ? .trailing : .leading)
+                .multilineTextAlignment(.leading)
         }
         .background(Theme.background(scheme))
         .studyBar(title: L10n.text("help.title", settings.language))
@@ -95,7 +96,7 @@ struct AboutView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: settings.language == .he ? .trailing : .leading, spacing: 22) {
+            VStack(alignment: .leading, spacing: 22) {
                 section(
                     L10n.text("about.authorHeading", settings.language),
                     L10n.text("about.author", settings.language)
@@ -107,11 +108,13 @@ struct AboutView: View {
                 Text(countsLine)
                     .font(.footnote)
                     .foregroundStyle(Theme.secondary(scheme))
-                    .frame(maxWidth: .infinity, alignment: settings.language == .he ? .trailing : .leading)
+                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 Text(L10n.text("about.offline", settings.language))
                     .font(.footnote)
                     .foregroundStyle(Theme.secondary(scheme))
-                    .frame(maxWidth: .infinity, alignment: settings.language == .he ? .trailing : .leading)
+                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
             .padding(22)
             .frame(maxWidth: 740)
@@ -122,28 +125,45 @@ struct AboutView: View {
     }
 
     private func section(_ title: String, _ body: String) -> some View {
-        VStack(alignment: settings.language == .he ? .trailing : .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 8) {
             Text(title)
                 .font(.headline)
                 .foregroundStyle(Theme.emphasis(scheme))
-                .frame(maxWidth: .infinity, alignment: settings.language == .he ? .trailing : .leading)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
             Text(body)
                 .font(.body)
                 .foregroundStyle(Theme.text(scheme))
                 .lineSpacing(5)
-                .multilineTextAlignment(settings.language == .he ? .trailing : .leading)
-                .frame(maxWidth: .infinity, alignment: settings.language == .he ? .trailing : .leading)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .textSelection(.enabled)
         }
     }
 
     private var countsLine: String {
-        let comments = store.meta["generated_utc"] ?? ""
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0"
+        let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "1"
         return String(
             format: L10n.text("about.counts", settings.language),
+            version,
+            build,
             store.yearStart,
             store.yearEnd,
-            comments
+            formattedBuildDate
         )
+    }
+
+    private var formattedBuildDate: String {
+        let raw = store.meta["generated_utc"] ?? ""
+        let parser = ISO8601DateFormatter()
+        parser.formatOptions = [.withInternetDateTime]
+        guard let date = parser.date(from: raw) else { return raw }
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: settings.language.localeIdentifier)
+        formatter.timeZone = .current
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter.string(from: date)
     }
 }

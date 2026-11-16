@@ -687,13 +687,13 @@
         "he": {
           "stringUnit": {
             "state": "translated",
-            "value": "האפליקציה מציגה את פירוש אור החיים על התורה בעברית, בלי חיבור לאינטרנט.\n\nשחזר מיקום אחרון חוזר אל הקטע האחרון שבו עמדתם. היסטוריה שומרת את המקומות שקראתם לאחרונה.\n\nהלימוד השבועי פותח את פרשת השבוע לפי הלוח שנבחר בהגדרות: ישראל או חוץ לארץ. כשקוראים שתי פרשות מחוברות, הן נפתחות ברצף. בפרשת וזאת הברכה הלוח עוקב אחרי שמחת תורה.\n\nבחרו חומש, ואחר כך פרשה. בבראשית מופיעה תחילה הקדמת המחבר.\n\nבתוך הקריאה, דיבור המתחיל המסומן במהדורה מוצג בהדגשה. הכוכב שומר את הקטע במועדפים. לחיצה ארוכה מעתיקה או משתפת את הקטע בעברית.\n\nבהגדרות אפשר לבחור את שפת הממשק, את הלוח, ניקוד, מראה בהיר או כהה, וגודל אות. גודל האות מגיב גם לגודל הטקסט של המערכת.\n\nבמקום שאין בו פירוש, כמו בראשית פרק י׳ וויקרא פרק כ״ז, מופיעה הערה קצרה. אין באפליקציה תרגום של הפירוש."
+            "value": "האפליקציה מציגה את פירוש אור החיים על התורה בעברית, בלי חיבור לאינטרנט.\n\nשחזר מיקום אחרון חוזר אל הקטע האחרון שבו עמדתם. היסטוריה שומרת את המקומות שקראתם לאחרונה.\n\nהלימוד השבועי פותח את פרשת השבוע לפי הלוח שנבחר בהגדרות: ישראל או חוץ לארץ. כשקוראים שתי פרשות מחוברות, הן נפתחות ברצף. בפרשת וזאת הברכה הלוח עוקב אחרי שמחת תורה.\n\nבחרו חומש, ואחר כך פרשה. בבראשית מופיעה תחילה הקדמת המחבר.\n\nבתוך הקריאה, דיבור המתחיל המסומן במהדורה מוצג בהדגשה. הכוכב שומר את הקטע במועדפים. לחיצה ארוכה מעתיקה או משתפת את הקטע בעברית.\n\nבהגדרות אפשר לבחור את שפת הממשק, את הלוח, ניקוד, מראה בהיר או כהה, וגודל אות. גודל האות מגיב גם לגודל הטקסט של המערכת.\n\nבמקום שאין בו פירוש, כמו בראשית פרק י׳ וויקרא פרק כ״ז, מופיעה הערה קצרה. אין באפליקציה תרגום של הפירוש.\n\nשפת הממשק מחליפה מיד את הכיתוב, את כיוון הפריסה ואת אזור התאריך. שם האפליקציה במסך הבית, חלק מגיליונות המערכת, ושפת VoiceOver נשארים לפי שפת המכשיר."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The app shows Ohr HaChaim on the Torah in Hebrew, with no network connection.\n\nResume last place returns to the passage you were reading. History keeps the places you have opened recently.\n\nThis week's parasha follows the calendar chosen in Settings: Israel or the Diaspora. When two portions are read together, they open one after the other. Vezot HaBerachah follows Simchat Torah.\n\nChoose a book, then a parasha. Genesis begins with the author's introduction.\n\nIn the reading, a dibbur hamatchil marked in the edition is emphasised. The star saves a passage to Favourites. A long press copies or shares the Hebrew passage.\n\nSettings chooses the interface language, the calendar, nikud, light or dark appearance, and type size. Type size also follows the system text-size setting.\n\nWhere the commentary is absent, such as Genesis 10 and Leviticus 27, a short note appears. The app does not translate the commentary."
+            "value": "The app shows Ohr HaChaim on the Torah in Hebrew, with no network connection.\n\nResume last place returns to the passage you were reading. History keeps the places you have opened recently.\n\nThis week's parasha follows the calendar chosen in Settings: Israel or the Diaspora. When two portions are read together, they open one after the other. Vezot HaBerachah follows Simchat Torah.\n\nChoose a book, then a parasha. Genesis begins with the author's introduction.\n\nIn the reading, a dibbur hamatchil marked in the edition is emphasised. The star saves a passage to Favourites. A long press copies or shares the Hebrew passage.\n\nSettings chooses the interface language, the calendar, nikud, light or dark appearance, and type size. Type size also follows the system text-size setting.\n\nWhere the commentary is absent, such as Genesis 10 and Leviticus 27, a short note appears. The app does not translate the commentary.\n\nThe interface language changes the wording, the layout direction, and date formatting immediately. The app name on the Home Screen, some system sheets, and the VoiceOver language stay on the device language."
           }
         }
       }
@@ -806,13 +806,13 @@
         "he": {
           "stringUnit": {
             "state": "translated",
-            "value": "לוח הפרשות: %@–%@. נתונים שנוצרו ב־%@"
+            "value": "גרסה %@ (%@). לוח הפרשות %@–%@. עודכן %@."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Reading calendar: %@–%@. Data built %@"
+            "value": "Version %@ (%@). Reading calendar %@–%@. Updated %@."
           }
         }
       }

@@ -29,6 +29,22 @@ enum HebrewNumerals {
 }
 
 enum HebrewText {
+    static func containsHebrew(_ text: String) -> Bool {
+        text.unicodeScalars.contains { (0x0590...0x05FF).contains($0.value) }
+    }
+
+    static func number(_ value: Int, language: AppLanguage) -> String {
+        language == .he ? HebrewNumerals.string(value) : String(value)
+    }
+
+    static func citation(chapter: Int, verse: Int, language: AppLanguage) -> String {
+        String(
+            format: L10n.text("reading.place", language),
+            number(chapter, language: language),
+            number(verse, language: language)
+        )
+    }
+
     static func stripNikud(_ text: String) -> String {
         var scalars = String.UnicodeScalarView()
         for scalar in text.unicodeScalars {

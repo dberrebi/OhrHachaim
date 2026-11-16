@@ -877,7 +877,7 @@ def validate_database(path: Path, year_start: int, year_end: int) -> dict:
                 "SELECT MIN(gregorian_date) AS a, MAX(gregorian_date) AS b, COUNT(*) AS n FROM weekly WHERE israel = ?",
                 (israel,),
             ).fetchone()
-            if span["a"][:4] > str(year_start) or span["b"][:4] < str(year_end - 1):
+            if span["a"][:4] > str(year_start) or span["b"][:4] < str(year_end):
                 fail(f"weekly calendar israel={israel} does not cover {year_start}-{year_end}: {span['a']}..{span['b']}")
         combined = connection.execute(
             "SELECT COUNT(*) AS n FROM weekly WHERE parasha_ids LIKE '%,%'"

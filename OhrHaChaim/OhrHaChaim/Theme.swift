@@ -46,7 +46,7 @@ enum Theme {
     }
 
     static func containsHebrew(_ text: String) -> Bool {
-        text.unicodeScalars.contains { (0x0590...0x05FF).contains($0.value) }
+        HebrewText.containsHebrew(text)
     }
 
     static func titleFont(for title: String) -> Font {

@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct HomeView: View {
-    @Binding var selection: SidebarItem?
+    var onOpen: (SidebarItem) -> Void
     @Environment(AppSettings.self) private var settings
     @Environment(CommentaryStore.self) private var store
     @Environment(UserLibrary.self) private var library
@@ -13,7 +13,12 @@ struct HomeView: View {
             row(.history, title: L10n.text("home.history", settings.language), subtitle: nil)
             row(.weekly, title: L10n.text("home.weekly", settings.language), subtitle: weeklySubtitle)
             ForEach(store.books) { book in
-                row(.book(book.id), title: book.name(for: settings.language), subtitle: nil)
+                row(
+                    .book(book.id),
+                    title: book.name(for: settings.language),
+                    subtitle: nil,
+                    identifier: "home.book.\(book.id)"
+                )
             }
             row(.settings, title: L10n.text("home.settings", settings.language), subtitle: nil)
             row(.help, title: L10n.text("home.help", settings.language), subtitle: nil)
@@ -49,22 +54,24 @@ struct HomeView: View {
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    selection = .favourites
+                    onOpen(.favourites)
                 } label: {
                     Image(systemName: "star")
                 }
                 .accessibilityLabel(L10n.text("a11y.favourites", settings.language))
+                .accessibilityIdentifier("home.favourites")
             }
         }
         .navigationTitle(L10n.text("app.title", settings.language))
     }
 
-    private func row(_ item: SidebarItem, title: String, subtitle: String?) -> some View {
+    private func row(_ item: SidebarItem, title: String, subtitle: String?, identifier: String? = nil) -> some View {
         Button {
-            selection = item
+            onOpen(item)
         } label: {
             CenteredMenuRow(title: title, subtitle: subtitle)
         }
+        .accessibilityIdentifier(identifier ?? item.accessibilityID)
         .buttonStyle(.plain)
             .frame(maxWidth: .infinity)
             .contentShape(Rectangle())
@@ -74,8 +81,11 @@ struct HomeView: View {
     }
 
     private var resumeSubtitle: String? {
-        guard let id = library.lastCommentID, let comment = store.comment(id: id) else {
+        guard let id = library.lastCommentID else {
             return L10n.text("home.resume.empty", settings.language)
+        }
+        guard let comment = store.comment(id: id) else {
+            return L10n.text("reading.missingPlace", settings.language)
         }
         return store.locationTitle(for: comment, language: settings.language)
     }

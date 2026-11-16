@@ -10,12 +10,12 @@ struct BookView: View {
     var body: some View {
         List {
             if store.hasIntroduction(bookID: bookID) {
-                menuRow(L10n.text("book.introduction", settings.language)) {
+                menuRow(L10n.text("book.introduction", settings.language), identifier: "parasha.intro") {
                     path.append(ReadingRoute.introduction(scrollTo: nil))
                 }
             }
             ForEach(store.parashot(in: bookID)) { parasha in
-                menuRow(parasha.name(for: settings.language)) {
+                menuRow(parasha.name(for: settings.language), identifier: "parasha.\(parasha.id)") {
                     path.append(ReadingRoute.parasha(id: parasha.id, scrollTo: nil))
                 }
             }
@@ -25,10 +25,11 @@ struct BookView: View {
         .studyBar(title: store.book(id: bookID)?.name(for: settings.language) ?? "")
     }
 
-    private func menuRow(_ title: String, action: @escaping () -> Void) -> some View {
+    private func menuRow(_ title: String, identifier: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             CenteredMenuRow(title: title)
         }
+        .accessibilityIdentifier(identifier)
         .buttonStyle(.plain)
         .frame(maxWidth: .infinity)
         .contentShape(Rectangle())
