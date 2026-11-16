@@ -1,0 +1,49 @@
+{
+  "generated_utc": "2026-11-16T20:46:23Z",
+  "database": "OhrHaChaim/OhrHaChaim/Resources/ohr_hachaim.sqlite",
+  "sha256": "d51374cf63ab617cac9c7cbf2255bc3a8b60be198ee259e5cbb9e40ab907fc41",
+  "bytes": 9932800,
+  "licenses": {
+    "commentary": {
+      "work": "Or HaChaim on Genesis, Exodus, Leviticus, Numbers, Deuteronomy",
+      "version": "Sefaria Vocalized Edition",
+      "language": "he",
+      "license": "CC0",
+      "publisher": "Sefaria"
+    },
+    "introduction": {
+      "work": "Or HaChaim on Genesis, Introduction",
+      "version": "On Your Way",
+      "language": "he",
+      "license": "Public Domain",
+      "note": "The version titled 'On Your Way ' with a trailing space was not used; its licence is unknown."
+    },
+    "calendar": {
+      "provider": "Hebcal.com",
+      "license": "CC BY 4.0",
+      "url": "https://www.hebcal.com",
+      "years": [
+        2024,
+        2038
+      ]
+    }
+  },
+  "stats": {
+    "books": 5,
+    "parashot": 54,
+    "vocalized_comments": 5864,
+    "introduction_paragraphs": 14,
+    "gaps": [
+      "בחוקותי 27",
+      "נח 10"
+    ],
+    "weekly_rows": 1497,
+    "combined_weeks": 119,
+    "israel_diaspora_differences": 35,
+    "max_comment_index": 63,
+    "bytes": 9932800,
+    "sha256": "d51374cf63ab617cac9c7cbf2255bc3a8b60be198ee259e5cbb9e40ab907fc41"
+  },
+  "assignment_notes": [],
+  "assignment_note_count": 0
+}
