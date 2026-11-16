@@ -7,6 +7,10 @@ struct OhrHaChaimApp: App {
     @State private var store = CommentaryStore()
     @Environment(\.scenePhase) private var scenePhase
 
+    init() {
+        StatusBarChrome.install()
+    }
+
     var body: some Scene {
         WindowGroup {
             // Locale and layout direction follow the in-app language immediately.

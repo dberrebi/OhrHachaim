@@ -22,7 +22,22 @@ xcodebuild \
   build
 ```
 
-In Xcode, choose an iPhone or iPad simulator and run. The first screen is a full-width list: resume, history, this week's parasha, the five books, settings, help, and about.
+In Xcode, choose an iPhone or iPad simulator and run. Signing stays off for that, so no Apple ID is required.
+
+## Install on your own iPhone for free
+
+This uses a free Apple ID. It does not use the paid Apple Developer Program.
+
+Apple’s account help describes the Personal Team that Xcode creates when you sign in with an Apple ID that has no paid membership: up to 3 apps installed on a device, up to 10 App IDs, and up to 3 devices. Those registrations and the provisioning profile expire after 7 days. When the profile expires the icon can remain, but the app will not open until you rebuild and install it from Xcode again. Source: [About your developer account](https://developer.apple.com/help/account/basics/about-your-developer-account/).
+
+1. Install Xcode from the Mac App Store.
+2. In Xcode, open Settings → Accounts and sign in with your Apple ID. The team is shown as a Personal Team.
+3. Open `OhrHaChaim/OhrHaChaim.xcodeproj`. Select the OhrHaChaim app target, then Signing & Capabilities. Turn on Automatically manage signing and choose your Personal Team. If the bundle identifier is already registered to someone else, change it to a unique one, such as `app.ohrhachaim.yourname`.
+4. The project file leaves code signing off so CI can build without a team. For this device install, set Code Signing Allowed to Yes on that target if Xcode still refuses to sign.
+5. Connect the iPhone (or pair it from Xcode’s device list). On the phone, turn on Developer Mode under Settings → Privacy & Security, which iOS asks for the first time a development app is installed, and restart if prompted.
+6. Choose your iPhone as the run destination and press Run. If iOS says the developer is not trusted, open Settings → General → VPN & Device Management and trust your Apple ID.
+
+This is the official free way to put the app on a phone you control. A Personal Team cannot publish to the App Store or send the build to other people. The first screen is a full-width list: resume, history, this week's parasha, the five books, settings, help, and about.
 
 GitHub Actions (`.github/workflows/ios.yml`) builds and tests the same way on a macOS runner, with code signing disabled. The tests include an iPhone check that tapping בראשית opens its parasha list. The run uploads screenshots of that list and of the home screen. A pull request from this repository is covered by the branch push, so the workflow does not start a second macOS run for it.
 

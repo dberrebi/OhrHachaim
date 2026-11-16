@@ -5,7 +5,6 @@ struct HomeView: View {
     @Environment(AppSettings.self) private var settings
     @Environment(CommentaryStore.self) private var store
     @Environment(UserLibrary.self) private var library
-    @Environment(\.colorScheme) private var scheme
 
     var body: some View {
         List {
@@ -25,6 +24,7 @@ struct HomeView: View {
             row(.about, title: L10n.text("home.about", settings.language), subtitle: nil)
         }
         .modifier(MenuListStyle())
+        .listRowSeparator(.hidden)
         .environment(\.defaultMinListRowHeight, 56)
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(Theme.bar, for: .navigationBar)
@@ -73,11 +73,7 @@ struct HomeView: View {
         }
         .accessibilityIdentifier(identifier ?? item.accessibilityID)
         .buttonStyle(.plain)
-            .frame(maxWidth: .infinity)
-            .contentShape(Rectangle())
-            .listRowBackground(Theme.background(scheme))
-            .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
-            .listRowSeparatorTint(Theme.divider(scheme))
+        .modifier(FullWidthDividerRow())
     }
 
     private var resumeSubtitle: String? {
