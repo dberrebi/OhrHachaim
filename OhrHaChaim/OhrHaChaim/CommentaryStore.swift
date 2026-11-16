@@ -8,7 +8,7 @@ final class CommentaryStore {
     private(set) var books: [Book] = []
     private(set) var parashot: [Parasha] = []
     private(set) var weekly: [WeeklyReading] = []
-    private(set) var meta: [String: String] = []
+    private(set) var meta: [String: String] = [:]
     private(set) var loadError: String?
 
     private var commentsByParasha: [Int: [Comment]] = [:]
