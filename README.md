@@ -24,6 +24,8 @@ xcodebuild \
 
 In Xcode, choose an iPhone or iPad simulator and run. The first screen is a full-width list: resume, history, this week's parasha, the five books, settings, help, and about.
 
+GitHub Actions (`.github/workflows/ios.yml`) builds and tests the same way on a macOS runner, with code signing disabled, and uploads a simulator screenshot of the home screen. A pull request from this repository is covered by the branch push, so the workflow does not start a second macOS run for it.
+
 ## Screens
 
 - **Home.** Centred rows and a dark bar with the app mark, the title, share, and favourites.
