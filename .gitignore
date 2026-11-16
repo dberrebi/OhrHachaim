@@ -1,5 +1,8 @@
 .DS_Store
 scripts/.cache/
+scripts/__pycache__/
+**/__pycache__/
+*.pyc
 xcuserdata/
 *.xcuserstate
 DerivedData/
