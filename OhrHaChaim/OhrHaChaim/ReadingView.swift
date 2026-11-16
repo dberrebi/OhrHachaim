@@ -135,7 +135,6 @@ struct ReadingView: View {
             .frame(maxWidth: .infinity)
             .padding(.vertical, 22)
             .overlay(alignment: .bottom) { divider }
-            .accessibilityLanguage(settings.language == .he ? "he" : "en")
     }
 
     private func verseSection(chapter: Int, verse: Int, comments: [Comment]) -> some View {
@@ -148,7 +147,6 @@ struct ReadingView: View {
                 .padding(.top, 18)
                 .padding(.bottom, 8)
                 .accessibilityAddTraits(.isHeader)
-                .accessibilityLanguage(settings.language == .he ? "he" : "en")
             ForEach(comments) { comment in
                 commentRow(comment)
             }
@@ -183,7 +181,6 @@ struct ReadingView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .textSelection(.enabled)
             .environment(\.layoutDirection, .rightToLeft)
-            .accessibilityLanguage("he")
             .accessibilityLabel(spoken)
         }
         .environment(\.layoutDirection, .rightToLeft)

@@ -43,7 +43,6 @@ struct SettingsView: View {
                     .lineSpacing(6)
                     .frame(maxWidth: .infinity, alignment: .trailing)
                     .environment(\.layoutDirection, .rightToLeft)
-                    .accessibilityLanguage("he")
                 }
                 .padding(.vertical, 4)
             } header: {
@@ -86,7 +85,6 @@ struct HelpView: View {
         }
         .background(Theme.background(scheme))
         .studyBar(title: L10n.text("help.title", settings.language))
-        .accessibilityLanguage(settings.language == .he ? "he" : "en")
     }
 }
 
@@ -121,7 +119,6 @@ struct AboutView: View {
         }
         .background(Theme.background(scheme))
         .studyBar(title: L10n.text("about.title", settings.language))
-        .accessibilityLanguage(settings.language == .he ? "he" : "en")
     }
 
     private func section(_ title: String, _ body: String) -> some View {
