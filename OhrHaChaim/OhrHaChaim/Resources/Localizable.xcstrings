@@ -1,0 +1,1026 @@
+{
+  "sourceLanguage": "he",
+  "strings": {
+    "app.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אור החיים"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ohr HaChaim"
+          }
+        }
+      }
+    },
+    "welcome.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "בחרו חומש או את פרשת השבוע"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose a book, or this week's parasha"
+          }
+        }
+      }
+    },
+    "data.missing": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "לא נמצא קובץ הטקסט בתוך האפליקציה."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The bundled text could not be opened."
+          }
+        }
+      }
+    },
+    "home.resume": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שחזר מיקום אחרון"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resume last place"
+          }
+        }
+      }
+    },
+    "home.history": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "היסטוריה"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "History"
+          }
+        }
+      }
+    },
+    "home.weekly": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הלימוד השבועי"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This week's parasha"
+          }
+        }
+      }
+    },
+    "home.settings": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הגדרות"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings"
+          }
+        }
+      }
+    },
+    "home.help": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "עזרה"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Help"
+          }
+        }
+      }
+    },
+    "home.about": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אודות"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About"
+          }
+        }
+      }
+    },
+    "home.resume.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "עדיין אין מיקום שמור"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No saved place yet"
+          }
+        }
+      }
+    },
+    "home.weekly.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אין פרשה בלוח לתאריך זה"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No parasha is scheduled for this date"
+          }
+        }
+      }
+    },
+    "home.weekly.outOfRange": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "לוח הפרשות המצורף מכסה את השנים %@–%@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The bundled reading calendar covers %@–%@"
+          }
+        }
+      }
+    },
+    "weekly.simchat": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שמחת תורה"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Simchat Torah"
+          }
+        }
+      }
+    },
+    "book.introduction": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הקדמת המחבר"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Author's introduction"
+          }
+        }
+      }
+    },
+    "reading.place": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "פרק %@ · פסוק %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chapter %@ · Verse %@"
+          }
+        }
+      }
+    },
+    "reading.noCommentary": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אין פירוש אור החיים על פרק %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ohr HaChaim has no commentary on chapter %@"
+          }
+        }
+      }
+    },
+    "reading.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אין קטעים להצגה"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing to display"
+          }
+        }
+      }
+    },
+    "reading.missingPlace": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "המיקום השמור אינו נמצא בספר"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The saved place is not in this edition"
+          }
+        }
+      }
+    },
+    "reading.footer.vocalized": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הנוסח המנוקד: Sefaria Vocalized Edition, רישיון CC0"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vocalized text: Sefaria Vocalized Edition, licence CC0"
+          }
+        }
+      }
+    },
+    "reading.footer.introduction": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הקדמת המחבר לפי הגרסה On Your Way, רשות הציבור"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Author's introduction from the “On Your Way” version, public domain"
+          }
+        }
+      }
+    },
+    "history.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "היסטוריה"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "History"
+          }
+        }
+      }
+    },
+    "history.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הקטעים שתקראו יופיעו כאן"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passages you read will appear here"
+          }
+        }
+      }
+    },
+    "favourites.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מועדפים"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Favourites"
+          }
+        }
+      }
+    },
+    "favourites.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אין עדיין קטעים שמורים. בתוך הקריאה, הכוכב שומר קטע."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No saved passages yet. In the reading, the star keeps a passage."
+          }
+        }
+      }
+    },
+    "settings.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הגדרות"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings"
+          }
+        }
+      }
+    },
+    "settings.language": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שפת הממשק"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Interface language"
+          }
+        }
+      }
+    },
+    "settings.language.he": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "עברית"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "עברית"
+          }
+        }
+      }
+    },
+    "settings.language.en": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "English"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "English"
+          }
+        }
+      }
+    },
+    "settings.calendar": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "לוח הפרשות"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reading calendar"
+          }
+        }
+      }
+    },
+    "settings.calendar.israel": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ישראל"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Israel"
+          }
+        }
+      }
+    },
+    "settings.calendar.diaspora": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "חוץ לארץ"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diaspora"
+          }
+        }
+      }
+    },
+    "settings.nikud": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ניקוד"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nikud"
+          }
+        }
+      }
+    },
+    "settings.nikud.footer": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "כיבוי הניקוד מסתיר את סימני הניקוד ואת הטעמים. הטקסט השמור נשאר מנוקד."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turning nikud off hides vowel points and cantillation marks. The stored text stays vocalized."
+          }
+        }
+      }
+    },
+    "settings.dynamicType": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "גודל האות מגיב גם להגדרת גודל הטקסט של המערכת."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Size also follows the system text-size setting."
+          }
+        }
+      }
+    },
+    "settings.fontSize": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "גודל אות"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Font size"
+          }
+        }
+      }
+    },
+    "settings.appearance": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מראה"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Appearance"
+          }
+        }
+      }
+    },
+    "settings.appearance.system": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "לפי המערכת"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "System"
+          }
+        }
+      }
+    },
+    "settings.appearance.light": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "בהיר"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Light"
+          }
+        }
+      }
+    },
+    "settings.appearance.dark": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "כהה"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dark"
+          }
+        }
+      }
+    },
+    "help.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "עזרה"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Help"
+          }
+        }
+      }
+    },
+    "help.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "האפליקציה מציגה את פירוש אור החיים על התורה בעברית, בלי חיבור לאינטרנט.\n\nשחזר מיקום אחרון חוזר אל הקטע האחרון שבו עמדתם. היסטוריה שומרת את המקומות שקראתם לאחרונה.\n\nהלימוד השבועי פותח את פרשת השבוע לפי הלוח שנבחר בהגדרות: ישראל או חוץ לארץ. כשקוראים שתי פרשות מחוברות, הן נפתחות ברצף. בפרשת וזאת הברכה הלוח עוקב אחרי שמחת תורה.\n\nבחרו חומש, ואחר כך פרשה. בבראשית מופיעה תחילה הקדמת המחבר.\n\nבתוך הקריאה, דיבור המתחיל המסומן במהדורה מוצג בהדגשה. הכוכב שומר את הקטע במועדפים. לחיצה ארוכה מעתיקה או משתפת את הקטע בעברית.\n\nבהגדרות אפשר לבחור את שפת הממשק, את הלוח, ניקוד, מראה בהיר או כהה, וגודל אות. גודל האות מגיב גם לגודל הטקסט של המערכת.\n\nבמקום שאין בו פירוש, כמו בראשית פרק י׳ וויקרא פרק כ״ז, מופיעה הערה קצרה. אין באפליקציה תרגום של הפירוש.\n\nשפת הממשק מחליפה מיד את הכיתוב, את כיוון הפריסה ואת אזור התאריך. שם האפליקציה במסך הבית, חלק מגיליונות המערכת, ושפת VoiceOver נשארים לפי שפת המכשיר."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The app shows Ohr HaChaim on the Torah in Hebrew, with no network connection.\n\nResume last place returns to the passage you were reading. History keeps the places you have opened recently.\n\nThis week's parasha follows the calendar chosen in Settings: Israel or the Diaspora. When two portions are read together, they open one after the other. Vezot HaBerachah follows Simchat Torah.\n\nChoose a book, then a parasha. Genesis begins with the author's introduction.\n\nIn the reading, a dibbur hamatchil marked in the edition is emphasised. The star saves a passage to Favourites. A long press copies or shares the Hebrew passage.\n\nSettings chooses the interface language, the calendar, nikud, light or dark appearance, and type size. Type size also follows the system text-size setting.\n\nWhere the commentary is absent, such as Genesis 10 and Leviticus 27, a short note appears. The app does not translate the commentary.\n\nThe interface language changes the wording, the layout direction, and date formatting immediately. The app name on the Home Screen, some system sheets, and the VoiceOver language stay on the device language."
+          }
+        }
+      }
+    },
+    "about.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אודות"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About"
+          }
+        }
+      }
+    },
+    "about.authorHeading": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "המחבר"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The author"
+          }
+        }
+      }
+    },
+    "about.author": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "רבי חיים בן משה אבן עטר (תנ״ו–תק״ג, 1696–1743), מחכמי סלא שבמרוקו ומירושלים, מחבר פירוש אור החיים על התורה. הפירוש משלב פשט, דרש וקבלה. הוא עלה לירושלים ובה נפטר."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rabbi Chaim ben Moshe ibn Attar (1696–1743), of Salé in Morocco and of Jerusalem, wrote Ohr HaChaim on the Torah. The commentary joins peshat, derash, and kabbalah. He settled in Jerusalem and died there."
+          }
+        }
+      }
+    },
+    "about.sourcesHeading": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מקורות ורישיונות"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sources and licences"
+          }
+        }
+      }
+    },
+    "about.sources": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "נוסח הפירוש: Sefaria Vocalized Edition, עברית, על בראשית, שמות, ויקרא, במדבר ודברים. רישיון CC0 1.0 (נחלת הכלל). https://www.sefaria.org\n\nהקדמת המחבר: הגרסה העברית ששמה המדויק הוא On Your Way, רשות הציבור (Public Domain), כפי שפורסמה בספריא. לא נעשה שימוש בגרסה ששמה מסתיים ברווח, מפני שרישיונה אינו ידוע.\n\nלוח הפרשות, כולל פרשות מחוברות וההבדל בין ישראל לחוץ לארץ: Hebcal.com, ברישיון Creative Commons Attribution 4.0 (CC BY 4.0). יש לייחס את לוח הקריאה ל־Hebcal.com. https://www.hebcal.com\n\nהגופן: Noto Serif Hebrew, © 2022 The Noto Project Authors, SIL Open Font License 1.1.\n\nהטקסט באפליקציה הוא עברית בלבד. אין בה תרגום של הפירוש."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Commentary text: Sefaria Vocalized Edition, Hebrew, on Genesis, Exodus, Leviticus, Numbers, and Deuteronomy. Licence CC0 1.0. https://www.sefaria.org\n\nAuthor's introduction: the Hebrew version whose exact title is On Your Way, public domain, as published on Sefaria. The version whose title ends with a space was not used, because its licence is unknown.\n\nTorah-reading calendar, including combined portions and the Israel / Diaspora difference: Hebcal.com, under Creative Commons Attribution 4.0 (CC BY 4.0). Attribute the schedule to Hebcal.com. https://www.hebcal.com\n\nTypeface: Noto Serif Hebrew, © 2022 The Noto Project Authors, SIL Open Font License 1.1.\n\nThe text in the app is Hebrew only. The commentary is not translated."
+          }
+        }
+      }
+    },
+    "about.offline": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "האפליקציה אינה מתחברת לרשת ואינה אוספת מידע."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The app does not use the network and does not collect information."
+          }
+        }
+      }
+    },
+    "about.counts": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "גרסה %@ (%@). לוח הפרשות %@–%@. עודכן %@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version %@ (%@). Reading calendar %@–%@. Updated %@."
+          }
+        }
+      }
+    },
+    "a11y.share": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שיתוף"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share"
+          }
+        }
+      }
+    },
+    "a11y.favourites": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מועדפים"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Favourites"
+          }
+        }
+      }
+    },
+    "a11y.addFavourite": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שמירה במועדפים"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save to favourites"
+          }
+        }
+      }
+    },
+    "a11y.removeFavourite": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הסרה מהמועדפים"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove from favourites"
+          }
+        }
+      }
+    },
+    "a11y.fontSize": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "גודל אות"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Font size"
+          }
+        }
+      }
+    },
+    "action.copy": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "העתקה"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy"
+          }
+        }
+      }
+    },
+    "action.sharePassage": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "שיתוף הקטע"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share passage"
+          }
+        }
+      }
+    },
+    "share.app": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אור החיים\nפרשת השבוע: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ohr HaChaim\nThis week's parasha: %@"
+          }
+        }
+      }
+    },
+    "share.portion": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אור החיים\n%@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ohr HaChaim\n%@"
+          }
+        }
+      }
+    },
+    "share.introHeading": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הקדמת אור החיים\nמקור: On Your Way, רשות הציבור"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ohr HaChaim, author's introduction\nSource: “On Your Way”, public domain"
+          }
+        }
+      }
+    },
+    "share.intro": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הקדמת אור החיים\n\n%@\n\nמקור: On Your Way, רשות הציבור"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ohr HaChaim, author's introduction\n\n%@\n\nSource: “On Your Way”, public domain"
+          }
+        }
+      }
+    },
+    "share.passage": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אור החיים על %@\n%@\nפרק %@ פסוק %@\n\n%@\n\nמקור: Sefaria Vocalized Edition (CC0)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ohr HaChaim on %@\n%@\nChapter %@, verse %@\n\n%@\n\nSource: Sefaria Vocalized Edition (CC0)"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

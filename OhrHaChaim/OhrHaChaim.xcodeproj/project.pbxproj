@@ -1,0 +1,628 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0000000000004DF80000000A /* OhrHaChaimApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF800000024 /* OhrHaChaimApp.swift */; };
+		0000000000004DF80000000B /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF800000025 /* Models.swift */; };
+		0000000000004DF80000000C /* L10n.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF800000026 /* L10n.swift */; };
+		0000000000004DF80000000D /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF800000027 /* Theme.swift */; };
+		0000000000004DF80000000E /* HebrewTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF800000028 /* HebrewTypography.swift */; };
+		0000000000004DF80000000F /* CommentaryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF800000029 /* CommentaryStore.swift */; };
+		0000000000004DF800000010 /* UserLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF80000002A /* UserLibrary.swift */; };
+		0000000000004DF800000011 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF80000002B /* RootView.swift */; };
+		0000000000004DF800000012 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF80000002C /* HomeView.swift */; };
+		0000000000004DF800000013 /* BookView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF80000002D /* BookView.swift */; };
+		0000000000004DF800000014 /* ReadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF80000002E /* ReadingView.swift */; };
+		0000000000004DF800000015 /* LibraryViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF80000002F /* LibraryViews.swift */; };
+		0000000000004DF800000016 /* InfoViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF800000030 /* InfoViews.swift */; };
+		0000000000004DF800000017 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF800000032 /* Assets.xcassets */; };
+		0000000000004DF800000018 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF800000033 /* Localizable.xcstrings */; };
+		0000000000004DF800000019 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF800000034 /* PrivacyInfo.xcprivacy */; };
+		0000000000004DF80000001A /* ohr_hachaim.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF800000035 /* ohr_hachaim.sqlite */; };
+		0000000000004DF80000001B /* NotoSerifHebrew-Variable.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF800000036 /* NotoSerifHebrew-Variable.ttf */; };
+		0000000000004DF80000001C /* OFL.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF800000037 /* OFL.txt */; };
+		0000000000004DF80000001D /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0000000000004DF800000038 /* libsqlite3.tbd */; };
+		A4DF80000000000000000012 /* OhrHaChaimTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4DF80000000000000000011 /* OhrHaChaimTests.swift */; };
+		B4DF80000000000000000012 /* NavigationUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DF80000000000000000011 /* NavigationUITests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0000000000004DF800000024 /* OhrHaChaimApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OhrHaChaimApp.swift; sourceTree = "<group>"; };
+		0000000000004DF800000025 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		0000000000004DF800000026 /* L10n.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = L10n.swift; sourceTree = "<group>"; };
+		0000000000004DF800000027 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		0000000000004DF800000028 /* HebrewTypography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HebrewTypography.swift; sourceTree = "<group>"; };
+		0000000000004DF800000029 /* CommentaryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentaryStore.swift; sourceTree = "<group>"; };
+		0000000000004DF80000002A /* UserLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserLibrary.swift; sourceTree = "<group>"; };
+		0000000000004DF80000002B /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		0000000000004DF80000002C /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		0000000000004DF80000002D /* BookView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookView.swift; sourceTree = "<group>"; };
+		0000000000004DF80000002E /* ReadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingView.swift; sourceTree = "<group>"; };
+		0000000000004DF80000002F /* LibraryViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryViews.swift; sourceTree = "<group>"; };
+		0000000000004DF800000030 /* InfoViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViews.swift; sourceTree = "<group>"; };
+		0000000000004DF800000031 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0000000000004DF800000032 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Resources/Assets.xcassets"; sourceTree = "<group>"; };
+		0000000000004DF800000033 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = "Resources/Localizable.xcstrings"; sourceTree = "<group>"; };
+		0000000000004DF800000034 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "PrivacyInfo.xcprivacy"; sourceTree = "<group>"; };
+		0000000000004DF800000035 /* ohr_hachaim.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Resources/ohr_hachaim.sqlite"; sourceTree = "<group>"; };
+		0000000000004DF800000036 /* NotoSerifHebrew-Variable.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Resources/Fonts/NotoSerifHebrew-Variable.ttf"; sourceTree = "<group>"; };
+		0000000000004DF800000037 /* OFL.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Resources/Fonts/OFL.txt"; sourceTree = "<group>"; };
+		0000000000004DF800000038 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		0000000000004DF800000039 /* OhrHaChaim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OhrHaChaim.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A4DF80000000000000000011 /* OhrHaChaimTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OhrHaChaimTests.swift; sourceTree = "<group>"; };
+		A4DF8000000000000000001B /* OhrHaChaimTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OhrHaChaimTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B4DF80000000000000000011 /* NavigationUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationUITests.swift; sourceTree = "<group>"; };
+		B4DF8000000000000000001B /* OhrHaChaimUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OhrHaChaimUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		0000000000004DF800000002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0000000000004DF80000001D /* libsqlite3.tbd in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A4DF80000000000000000014 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B4DF80000000000000000014 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0000000000004DF800000007 /* OhrHaChaim */ = {
+			isa = PBXGroup;
+			children = (
+				0000000000004DF800000024 /* OhrHaChaimApp.swift */,
+				0000000000004DF800000025 /* Models.swift */,
+				0000000000004DF800000026 /* L10n.swift */,
+				0000000000004DF800000027 /* Theme.swift */,
+				0000000000004DF800000028 /* HebrewTypography.swift */,
+				0000000000004DF800000029 /* CommentaryStore.swift */,
+				0000000000004DF80000002A /* UserLibrary.swift */,
+				0000000000004DF80000002B /* RootView.swift */,
+				0000000000004DF80000002C /* HomeView.swift */,
+				0000000000004DF80000002D /* BookView.swift */,
+				0000000000004DF80000002E /* ReadingView.swift */,
+				0000000000004DF80000002F /* LibraryViews.swift */,
+				0000000000004DF800000030 /* InfoViews.swift */,
+				0000000000004DF800000031 /* Info.plist */,
+				0000000000004DF800000032 /* Assets.xcassets */,
+				0000000000004DF800000033 /* Localizable.xcstrings */,
+				0000000000004DF800000034 /* PrivacyInfo.xcprivacy */,
+				0000000000004DF800000035 /* ohr_hachaim.sqlite */,
+				0000000000004DF800000036 /* NotoSerifHebrew-Variable.ttf */,
+				0000000000004DF800000037 /* OFL.txt */,
+			);
+			path = OhrHaChaim;
+			sourceTree = "<group>";
+		};
+		0000000000004DF800000008 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0000000000004DF800000038 /* libsqlite3.tbd */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		0000000000004DF800000009 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0000000000004DF800000039 /* OhrHaChaim.app */,
+				A4DF8000000000000000001B /* OhrHaChaimTests.xctest */,
+				B4DF8000000000000000001B /* OhrHaChaimUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A4DF8000000000000000001A /* OhrHaChaimTests */ = {
+			isa = PBXGroup;
+			children = (
+				A4DF80000000000000000011 /* OhrHaChaimTests.swift */,
+			);
+			path = OhrHaChaimTests;
+			sourceTree = "<group>";
+		};
+		B4DF8000000000000000001A /* OhrHaChaimUITests */ = {
+			isa = PBXGroup;
+			children = (
+				B4DF80000000000000000011 /* NavigationUITests.swift */,
+			);
+			path = OhrHaChaimUITests;
+			sourceTree = "<group>";
+		};
+		0000000000004DF800000001 = {
+			isa = PBXGroup;
+			children = (
+				0000000000004DF800000007 /* OhrHaChaim */,
+				A4DF8000000000000000001A /* OhrHaChaimTests */,
+				B4DF8000000000000000001A /* OhrHaChaimUITests */,
+				0000000000004DF800000008 /* Frameworks */,
+				0000000000004DF800000009 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0000000000004DF800000003 /* OhrHaChaim */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0000000000004DF80000001F /* Build configuration list for PBXNativeTarget "OhrHaChaim" */;
+			buildPhases = (
+				0000000000004DF800000004 /* Sources */,
+				0000000000004DF800000002 /* Frameworks */,
+				0000000000004DF800000005 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OhrHaChaim;
+			productName = OhrHaChaim;
+			productReference = 0000000000004DF800000039 /* OhrHaChaim.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A4DF80000000000000000010 /* OhrHaChaimTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A4DF80000000000000000015 /* Build configuration list for PBXNativeTarget "OhrHaChaimTests" */;
+			buildPhases = (
+				A4DF80000000000000000013 /* Sources */,
+				A4DF80000000000000000014 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A4DF80000000000000000018 /* PBXTargetDependency */,
+			);
+			name = OhrHaChaimTests;
+			productName = OhrHaChaimTests;
+			productReference = A4DF8000000000000000001B /* OhrHaChaimTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		B4DF80000000000000000010 /* OhrHaChaimUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B4DF80000000000000000015 /* Build configuration list for PBXNativeTarget "OhrHaChaimUITests" */;
+			buildPhases = (
+				B4DF80000000000000000013 /* Sources */,
+				B4DF80000000000000000014 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B4DF80000000000000000018 /* PBXTargetDependency */,
+			);
+			name = OhrHaChaimUITests;
+			productName = OhrHaChaimUITests;
+			productReference = B4DF8000000000000000001B /* OhrHaChaimUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0000000000004DF800000006 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					0000000000004DF800000003 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = 0000000000004DF80000001E /* Build configuration list for PBXProject "OhrHaChaim" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = he;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				he,
+				en,
+				Base,
+			);
+			mainGroup = 0000000000004DF800000001;
+			productRefGroup = 0000000000004DF800000009 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0000000000004DF800000003 /* OhrHaChaim */,
+				A4DF80000000000000000010 /* OhrHaChaimTests */,
+				B4DF80000000000000000010 /* OhrHaChaimUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXContainerItemProxy section */
+		A4DF80000000000000000019 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0000000000004DF800000006 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0000000000004DF800000003;
+			remoteInfo = OhrHaChaim;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXTargetDependency section */
+		A4DF80000000000000000018 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0000000000004DF800000003 /* OhrHaChaim */;
+			targetProxy = A4DF80000000000000000019 /* PBXContainerItemProxy */;
+		};
+		B4DF80000000000000000019 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0000000000004DF800000006 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0000000000004DF800000003;
+			remoteInfo = OhrHaChaim;
+		};
+		B4DF80000000000000000018 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0000000000004DF800000003 /* OhrHaChaim */;
+			targetProxy = B4DF80000000000000000019 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0000000000004DF800000005 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0000000000004DF800000017 /* Assets.xcassets in Resources */,
+				0000000000004DF800000018 /* Localizable.xcstrings in Resources */,
+				0000000000004DF800000019 /* PrivacyInfo.xcprivacy in Resources */,
+				0000000000004DF80000001A /* ohr_hachaim.sqlite in Resources */,
+				0000000000004DF80000001B /* NotoSerifHebrew-Variable.ttf in Resources */,
+				0000000000004DF80000001C /* OFL.txt in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0000000000004DF800000004 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0000000000004DF80000000A /* OhrHaChaimApp.swift in Sources */,
+				0000000000004DF80000000B /* Models.swift in Sources */,
+				0000000000004DF80000000C /* L10n.swift in Sources */,
+				0000000000004DF80000000D /* Theme.swift in Sources */,
+				0000000000004DF80000000E /* HebrewTypography.swift in Sources */,
+				0000000000004DF80000000F /* CommentaryStore.swift in Sources */,
+				0000000000004DF800000010 /* UserLibrary.swift in Sources */,
+				0000000000004DF800000011 /* RootView.swift in Sources */,
+				0000000000004DF800000012 /* HomeView.swift in Sources */,
+				0000000000004DF800000013 /* BookView.swift in Sources */,
+				0000000000004DF800000014 /* ReadingView.swift in Sources */,
+				0000000000004DF800000015 /* LibraryViews.swift in Sources */,
+				0000000000004DF800000016 /* InfoViews.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A4DF80000000000000000013 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A4DF80000000000000000012 /* OhrHaChaimTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B4DF80000000000000000013 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B4DF80000000000000000012 /* NavigationUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		0000000000004DF800000020 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN_UNUSED_FUNCTION = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("DEBUG=1","$(inherited)",);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		0000000000004DF800000021 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN_UNUSED_FUNCTION = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		0000000000004DF800000022 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = OhrHaChaim/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)","@executable_path/Frameworks",);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = app.ohrhachaim.OhrHaChaim;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				ENABLE_PREVIEWS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+			};
+			name = Debug;
+		};
+		0000000000004DF800000023 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = OhrHaChaim/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)","@executable_path/Frameworks",);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = app.ohrhachaim.OhrHaChaim;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_STRICT_CONCURRENCY = minimal;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		A4DF80000000000000000016 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)","@executable_path/Frameworks","@loader_path/Frameworks",);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = app.ohrhachaim.OhrHaChaimTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OhrHaChaim.app/OhrHaChaim";
+			};
+			name = Debug;
+		};
+		A4DF80000000000000000017 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)","@executable_path/Frameworks","@loader_path/Frameworks",);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = app.ohrhachaim.OhrHaChaimTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OhrHaChaim.app/OhrHaChaim";
+			};
+			name = Release;
+		};
+		B4DF80000000000000000016 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = app.ohrhachaim.OhrHaChaimUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)","@executable_path/Frameworks","@loader_path/Frameworks",);
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = OhrHaChaim;
+			};
+			name = Debug;
+		};
+		B4DF80000000000000000017 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = app.ohrhachaim.OhrHaChaimUITests;
+				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)","@executable_path/Frameworks","@loader_path/Frameworks",);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = OhrHaChaim;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0000000000004DF80000001E /* Build configuration list for PBXProject "OhrHaChaim" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0000000000004DF800000020 /* Debug */,
+				0000000000004DF800000021 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0000000000004DF80000001F /* Build configuration list for PBXNativeTarget "OhrHaChaim" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0000000000004DF800000022 /* Debug */,
+				0000000000004DF800000023 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A4DF80000000000000000015 /* Build configuration list for PBXNativeTarget "OhrHaChaimTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A4DF80000000000000000016 /* Debug */,
+				A4DF80000000000000000017 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B4DF80000000000000000015 /* Build configuration list for PBXNativeTarget "OhrHaChaimUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B4DF80000000000000000016 /* Debug */,
+				B4DF80000000000000000017 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0000000000004DF800000006 /* Project object */;
+}

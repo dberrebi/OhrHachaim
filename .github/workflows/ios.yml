@@ -1,0 +1,88 @@
+name: iOS
+
+on:
+  push:
+  pull_request:
+
+# A same-repo pull request is already built by its push. Fork pull requests
+# still run here. Cancel a superseded push so a fix does not pay for two
+# macOS runs of the same branch.
+concurrency:
+  group: ios-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Choose an installed iPhone simulator
+        id: sim
+        run: |
+          UDID=$(python3 - <<'PY'
+          import json, subprocess, sys
+          raw = subprocess.check_output(["xcrun", "simctl", "list", "devices", "available", "-j"])
+          devices = json.loads(raw)["devices"]
+
+          def pick(prefer_exact):
+              for runtime, entries in devices.items():
+                  if "iOS" not in runtime:
+                      continue
+                  for device in entries:
+                      if not device.get("isAvailable"):
+                          continue
+                      name = device.get("name", "")
+                      if prefer_exact and name == "iPhone 16":
+                          return device["udid"], name
+                      if not prefer_exact and name.startswith("iPhone"):
+                          return device["udid"], name
+              return None
+
+          chosen = pick(True) or pick(False)
+          if chosen is None:
+              sys.exit("No available iPhone simulator")
+          print(chosen[0])
+          print(chosen[1], file=sys.stderr)
+          PY
+          )
+          echo "udid=${UDID}" >> "$GITHUB_OUTPUT"
+          echo "Using simulator ${UDID}"
+
+      - name: Build and test
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project OhrHaChaim/OhrHaChaim.xcodeproj \
+            -scheme OhrHaChaim \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}" \
+            -derivedDataPath "${RUNNER_TEMP}/DerivedData" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            COMPILER_INDEX_STORE_ENABLE=NO
+
+      - name: Screenshot home and the opened book
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+          test -f /tmp/parasha-list.png
+          cp /tmp/parasha-list.png artifacts/parasha-list.png
+          APP="${RUNNER_TEMP}/DerivedData/Build/Products/Debug-iphonesimulator/OhrHaChaim.app"
+          test -d "$APP"
+          xcrun simctl boot "${{ steps.sim.outputs.udid }}" || true
+          xcrun simctl install "${{ steps.sim.outputs.udid }}" "$APP"
+          xcrun simctl terminate "${{ steps.sim.outputs.udid }}" app.ohrhachaim.OhrHaChaim || true
+          xcrun simctl launch "${{ steps.sim.outputs.udid }}" app.ohrhachaim.OhrHaChaim
+          sleep 4
+          xcrun simctl io "${{ steps.sim.outputs.udid }}" screenshot artifacts/home.png
+          ls -l artifacts
+
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: simulator-screenshots
+          path: artifacts/*.png
+          if-no-files-found: error
