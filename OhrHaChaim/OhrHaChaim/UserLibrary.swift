@@ -54,7 +54,7 @@ final class AppSettings {
     }
 
     /// Israel only when the device region is Israel. Anywhere else starts on the diaspora calendar.
-    static func usesIsraelCalendar(regionCode: String?) -> Bool {
+    nonisolated static func usesIsraelCalendar(regionCode: String?) -> Bool {
         regionCode == "IL"
     }
 
