@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 enum Theme {
     static let bar = Color(red: 0.110, green: 0.086, blue: 0.071)
@@ -83,5 +84,45 @@ struct StudyBar: ViewModifier {
 extension View {
     func studyBar(title: String) -> some View {
         modifier(StudyBar(title: title))
+    }
+}
+
+/// Hides the system list separator, which stops at the title, and draws one hairline across the row.
+struct FullWidthDividerRow: ViewModifier {
+    @Environment(\.colorScheme) private var scheme
+
+    func body(content: Content) -> some View {
+        content
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            .background(alignment: .bottom) {
+                Rectangle()
+                    .fill(Theme.divider(scheme))
+                    .frame(height: 0.5)
+                    .frame(maxWidth: .infinity)
+            }
+            .listRowInsets(EdgeInsets())
+            .listRowSeparator(.hidden)
+            .listRowBackground(Theme.background(scheme))
+            .contentShape(Rectangle())
+    }
+}
+
+enum StatusBarChrome {
+    /// The top bar is always dark, so its status-bar icons stay light in both appearances.
+    static func install() {
+        let bar = UINavigationBar.appearance()
+        bar.overrideUserInterfaceStyle = .dark
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = UIColor(red: 0.110, green: 0.086, blue: 0.071, alpha: 1)
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+        appearance.shadowColor = .clear
+        bar.standardAppearance = appearance
+        bar.scrollEdgeAppearance = appearance
+        bar.compactAppearance = appearance
+        bar.compactScrollEdgeAppearance = appearance
+        bar.tintColor = .white
     }
 }

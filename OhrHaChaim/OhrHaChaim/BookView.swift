@@ -21,6 +21,7 @@ struct BookView: View {
             }
         }
         .modifier(MenuListStyle())
+        .listRowSeparator(.hidden)
         .environment(\.defaultMinListRowHeight, 56)
         .studyBar(title: store.book(id: bookID)?.name(for: settings.language) ?? "")
     }
@@ -31,11 +32,7 @@ struct BookView: View {
         }
         .accessibilityIdentifier(identifier)
         .buttonStyle(.plain)
-        .frame(maxWidth: .infinity)
-        .contentShape(Rectangle())
-        .listRowBackground(Theme.background(scheme))
-        .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
-        .listRowSeparatorTint(Theme.divider(scheme))
+        .modifier(FullWidthDividerRow())
     }
 }
 
