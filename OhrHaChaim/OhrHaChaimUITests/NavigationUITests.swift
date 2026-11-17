@@ -126,8 +126,10 @@ final class WalkthroughUITests: XCTestCase {
         shot("long-press-on-passage")
     }
 
+    /// The first element with this identifier. A toolbar button such as the
+    /// favourites star is exposed twice (its wrapper and the button itself).
     private func element(_ identifier: String) -> XCUIElement {
-        app.descendants(matching: .any)[identifier]
+        app.descendants(matching: .any).matching(identifier: identifier).firstMatch
     }
 
     private func wait(for identifier: String) {
