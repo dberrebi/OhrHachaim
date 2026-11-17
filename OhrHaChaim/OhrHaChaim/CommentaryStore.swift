@@ -74,6 +74,39 @@ final class CommentaryStore {
         return rows
     }
 
+    func search(_ rawQuery: String, limit: Int = 40) -> [SearchHit] {
+        let match = HebrewText.ftsQuery(rawQuery)
+        guard !match.isEmpty, let database else { return [] }
+        var statement: OpaquePointer?
+        let sql = """
+            SELECT comment_id, snippet(comments_fts, 1, '', '', '…', 18)
+            FROM comments_fts
+            WHERE comments_fts MATCH ?
+            ORDER BY rank
+            LIMIT ?
+            """
+        guard sqlite3_prepare_v2(database, sql, -1, &statement, nil) == SQLITE_OK, let prepared = statement else {
+            sqlite3_finalize(statement)
+            return []
+        }
+        defer { sqlite3_finalize(prepared) }
+        let encoded = Array(match.utf8) + [0]
+        var hits: [SearchHit] = []
+        encoded.withUnsafeBufferPointer { buffer in
+            // The pointer stays valid through sqlite3_step. A nil destructor keeps that buffer.
+            sqlite3_bind_text(prepared, 1, buffer.baseAddress, -1, nil)
+            sqlite3_bind_int(prepared, 2, Int32(limit))
+            while sqlite3_step(prepared) == SQLITE_ROW {
+                let id = Int(sqlite3_column_int64(prepared, 0))
+                let snippet = columnText(prepared, 1)
+                guard let found = comment(id: id) else { continue }
+                let visible = snippet.isEmpty ? HebrewText.preview(found, stripNikud: true) : snippet
+                hits.append(SearchHit(comment: found, snippet: visible))
+            }
+        }
+        return hits
+    }
+
     func comment(id: Int) -> Comment? {
         if let cached = commentsByParasha.values.joined().first(where: { $0.id == id }) {
             return cached

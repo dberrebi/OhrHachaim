@@ -75,6 +75,8 @@ struct RootView: View {
                 HistoryView(path: $path)
             case .weekly:
                 WeeklyView()
+            case .search:
+                SearchView(path: $path)
             case .book(let id):
                 BookView(bookID: id, path: $path)
             case .settings:

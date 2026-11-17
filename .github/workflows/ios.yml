@@ -2,8 +2,6 @@ name: iOS
 
 on:
   push:
-    # The walkthrough branch runs walkthrough.yml instead, so each push starts one macOS run.
-    branches-ignore: [ccr-d921563f-qmt0au]
   pull_request:
 
 # A same-repo pull request is already built by its push. Fork pull requests
@@ -16,20 +14,42 @@ concurrency:
 jobs:
   build:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
-    runs-on: macos-15
-    timeout-minutes: 30
+    # macos-26 is the GitHub-hosted image whose default toolchain is Xcode 26
+    # (26.6 as of the 20260824 image) with the iOS 26 SDK. See
+    # https://github.com/actions/runner-images/blob/main/images/macos/macos-26-Readme.md
+    # The step below still selects an Xcode 26 app, so a later default of Xcode 27
+    # does not change this build. Deployment stays iOS 17.
+    runs-on: macos-26
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
 
-      - name: Choose an installed iPhone simulator
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE=$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)
+          sudo xcode-select -s "$XCODE"
+          xcodebuild -version
+          xcrun --sdk iphonesimulator --show-sdk-version
+          test -d "$XCODE"
+
+      - name: Choose simulators
         id: sim
         run: |
-          UDID=$(python3 - <<'PY'
-          import json, subprocess, sys
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, re, subprocess, sys
           raw = subprocess.check_output(["xcrun", "simctl", "list", "devices", "available", "-j"])
           devices = json.loads(raw)["devices"]
 
-          def pick(prefer_exact):
+          def runtime_version(runtime):
+              match = re.search(r"iOS-(\d+)-(\d+)", runtime)
+              if not match:
+                  return (0, 0)
+              return (int(match.group(1)), int(match.group(2)))
+
+          def pick(predicate):
+              chosen = None
               for runtime, entries in devices.items():
                   if "iOS" not in runtime:
                       continue
@@ -37,54 +57,91 @@ jobs:
                       if not device.get("isAvailable"):
                           continue
                       name = device.get("name", "")
-                      if prefer_exact and name == "iPhone 16":
-                          return device["udid"], name
-                      if not prefer_exact and name.startswith("iPhone"):
-                          return device["udid"], name
-              return None
+                      if not predicate(name):
+                          continue
+                      rank = (runtime_version(runtime), name)
+                      if chosen is None or rank > chosen[0]:
+                          chosen = (rank, device["udid"], name, runtime)
+              return chosen
 
-          chosen = pick(True) or pick(False)
-          if chosen is None:
-              sys.exit("No available iPhone simulator")
-          print(chosen[0])
-          print(chosen[1], file=sys.stderr)
+          iphone = pick(lambda name: name == "iPhone 17 Pro Max")
+          ipad = pick(lambda name: name.startswith("iPad Pro 13-inch"))
+          if iphone is None or ipad is None:
+              print(json.dumps(devices, indent=2)[:4000], file=sys.stderr)
+              sys.exit("Need iPhone 17 Pro Max and iPad Pro 13-inch simulators")
+          print(f"iPhone {iphone[2]} {iphone[3]} {iphone[1]}", file=sys.stderr)
+          print(f"iPad {ipad[2]} {ipad[3]} {ipad[1]}", file=sys.stderr)
+          import os
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as handle:
+              handle.write(f"iphone={iphone[1]}\n")
+              handle.write(f"ipad={ipad[1]}\n")
           PY
-          )
-          echo "udid=${UDID}" >> "$GITHUB_OUTPUT"
-          echo "Using simulator ${UDID}"
 
-      - name: Build and test
+      - name: Build for testing
         run: |
           set -o pipefail
-          xcodebuild test \
+          xcodebuild build-for-testing \
             -project OhrHaChaim/OhrHaChaim.xcodeproj \
             -scheme OhrHaChaim \
-            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.udid }}" \
+            -destination "generic/platform=iOS Simulator" \
             -derivedDataPath "${RUNNER_TEMP}/DerivedData" \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
             COMPILER_INDEX_STORE_ENABLE=NO
 
-      - name: Screenshot home and the opened book
+      - name: Test on iPhone 17 Pro Max and capture screenshots
+        run: |
+          set -o pipefail
+          XCTESTRUN=$(find "${RUNNER_TEMP}/DerivedData" -name '*.xctestrun' -print -quit)
+          test -n "$XCTESTRUN"
+          xcodebuild test-without-building \
+            -xctestrun "$XCTESTRUN" \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.iphone }}" \
+            -derivedDataPath "${RUNNER_TEMP}/DerivedData" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=""
+
+      - name: Capture iPad 13-inch screenshots
+        run: |
+          set -o pipefail
+          XCTESTRUN=$(find "${RUNNER_TEMP}/DerivedData" -name '*.xctestrun' -print -quit)
+          test -n "$XCTESTRUN"
+          xcodebuild test-without-building \
+            -xctestrun "$XCTESTRUN" \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.ipad }}" \
+            -only-testing:OhrHaChaimUITests/StoreScreenshotUITests \
+            -derivedDataPath "${RUNNER_TEMP}/DerivedData" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=""
+
+      - name: Check screenshot sizes
         run: |
           set -euo pipefail
-          mkdir -p artifacts
-          test -f /tmp/parasha-list.png
-          cp /tmp/parasha-list.png artifacts/parasha-list.png
-          APP="${RUNNER_TEMP}/DerivedData/Build/Products/Debug-iphonesimulator/OhrHaChaim.app"
-          test -d "$APP"
-          xcrun simctl boot "${{ steps.sim.outputs.udid }}" || true
-          xcrun simctl install "${{ steps.sim.outputs.udid }}" "$APP"
-          xcrun simctl terminate "${{ steps.sim.outputs.udid }}" app.ohrhachaim.OhrHaChaim || true
-          xcrun simctl launch "${{ steps.sim.outputs.udid }}" app.ohrhachaim.OhrHaChaim
-          sleep 4
-          xcrun simctl io "${{ steps.sim.outputs.udid }}" screenshot artifacts/home.png
-          ls -l artifacts
+          python3 scripts/prepare_screenshots.py /tmp/shots
+          mkdir -p artifacts/appearance artifacts/app-store
+          cp /tmp/shots/*-light-home.png /tmp/shots/*-dark-home.png artifacts/appearance/
+          cp /tmp/shots/*-light-parasha-list.png /tmp/shots/*-dark-parasha-list.png artifacts/appearance/
+          cp /tmp/shots/*-light-home.png artifacts/app-store/
+          cp /tmp/shots/*-light-weekly.png artifacts/app-store/
+          cp /tmp/shots/*-light-parasha-list.png artifacts/app-store/
+          cp /tmp/shots/*-light-reader.png artifacts/app-store/
+          cp /tmp/shots/*-light-search.png artifacts/app-store/
+          cp /tmp/shots/*-light-settings.png artifacts/app-store/
+          find artifacts -type f -name '*.png' | sort
 
       - uses: actions/upload-artifact@v4
         if: success()
         with:
           name: simulator-screenshots
-          path: artifacts/*.png
+          path: artifacts/appearance/*.png
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: app-store-screenshots
+          path: artifacts/app-store/*.png
           if-no-files-found: error

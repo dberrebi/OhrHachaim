@@ -45,6 +45,25 @@ enum HebrewText {
         )
     }
 
+    /// FTS5 query of Hebrew letters only. Nikud and cantillation are dropped, and each word is a prefix.
+    static func ftsQuery(_ raw: String) -> String {
+        let stripped = stripNikud(raw)
+        var words: [String] = []
+        var current = ""
+        for scalar in stripped.unicodeScalars {
+            if (0x05D0...0x05EA).contains(scalar.value) {
+                current.unicodeScalars.append(scalar)
+            } else if !current.isEmpty {
+                words.append(current)
+                current = ""
+            }
+        }
+        if !current.isEmpty {
+            words.append(current)
+        }
+        return words.map { "\"\($0)\"*" }.joined(separator: " ")
+    }
+
     static func stripNikud(_ text: String) -> String {
         var scalars = String.UnicodeScalarView()
         for scalar in text.unicodeScalars {

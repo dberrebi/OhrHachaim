@@ -29,3 +29,9 @@ enum L10n {
         return .main
     }
 }
+
+enum AppLinks {
+    /// GitHub Pages project site. Pages itself is not turned on from this repository.
+    static let support = URL(string: "https://dberrebi.github.io/OhrHachaim/")!
+    static let privacy = URL(string: "https://dberrebi.github.io/OhrHachaim/privacy/")!
+}
