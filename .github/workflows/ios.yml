@@ -103,6 +103,12 @@ jobs:
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY=""
 
+      - name: Boot the iPad simulator
+        run: |
+          set -euo pipefail
+          xcrun simctl boot "${{ steps.sim.outputs.ipad }}" || true
+          xcrun simctl bootstatus "${{ steps.sim.outputs.ipad }}" -b
+
       - name: Capture iPad 13-inch screenshots
         run: |
           set -o pipefail
