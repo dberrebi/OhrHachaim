@@ -112,6 +112,10 @@ final class WalkthroughUITests: XCTestCase {
         shot("settings-dark")
         tapButton("English")
         pause(1)
+        shot("after-switching-to-english")
+        goHome() // Switching the language rebuilds the screens and returns home.
+        tap("home.settings")
+        pause(1)
         shot("settings-english-dark")
 
         goHome()

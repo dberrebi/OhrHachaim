@@ -16,8 +16,12 @@ struct OhrHaChaimApp: App {
             // Locale and layout direction follow the in-app language immediately.
             // The process localization does not: SpringBoard, some system sheets,
             // and the VoiceOver language stay on the device language.
+            // Rebuild the screens when the language changes. Lists and forms that are
+            // already on screen do not follow a live change of layoutDirection, and
+            // drew their text mirrored after switching from Hebrew to English.
             AppearanceHost {
                 RootView()
+                    .id(settings.language)
                     .environment(\.layoutDirection, settings.language == .he ? .rightToLeft : .leftToRight)
                     .environment(\.locale, Locale(identifier: settings.language.localeIdentifier))
                     .tint(Theme.accent)
