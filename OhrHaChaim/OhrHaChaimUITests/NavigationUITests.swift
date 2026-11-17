@@ -79,6 +79,9 @@ final class WalkthroughUITests: XCTestCase {
         tap("home.resume")
         pause(2)
         shot("resume")
+        app.swipeUp()
+        pause(3) // Long enough for the reading position to move while on Resume.
+        shot("resume-scrolled")
 
         goHome()
         tap("home.history")
