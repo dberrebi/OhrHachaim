@@ -687,13 +687,13 @@
         "he": {
           "stringUnit": {
             "state": "translated",
-            "value": "האפליקציה מציגה את פירוש אור החיים על התורה בעברית, בלי חיבור לאינטרנט.\n\nשחזר מיקום אחרון חוזר אל הקטע האחרון שבו עמדתם. היסטוריה שומרת את המקומות שקראתם לאחרונה.\n\nהלימוד השבועי פותח את פרשת השבוע לפי הלוח שנבחר בהגדרות: ישראל או חוץ לארץ. כשקוראים שתי פרשות מחוברות, הן נפתחות ברצף. בפרשת וזאת הברכה הלוח עוקב אחרי שמחת תורה.\n\nבחרו חומש, ואחר כך פרשה. בבראשית מופיעה תחילה הקדמת המחבר.\n\nבתוך הקריאה, דיבור המתחיל המסומן במהדורה מוצג בהדגשה. הכוכב שומר את הקטע במועדפים. לחיצה ארוכה מעתיקה או משתפת את הקטע בעברית.\n\nבהגדרות אפשר לבחור את שפת הממשק, את הלוח, ניקוד, מראה בהיר או כהה, וגודל אות. גודל האות מגיב גם לגודל הטקסט של המערכת.\n\nבמקום שאין בו פירוש, כמו בראשית פרק י׳ וויקרא פרק כ״ז, מופיעה הערה קצרה. אין באפליקציה תרגום של הפירוש.\n\nשפת הממשק מחליפה מיד את הכיתוב, את כיוון הפריסה ואת אזור התאריך. שם האפליקציה במסך הבית, חלק מגיליונות המערכת, ושפת VoiceOver נשארים לפי שפת המכשיר."
+            "value": "האפליקציה מציגה את פירוש אור החיים על התורה בעברית, בלי חיבור לאינטרנט.\n\nשחזר מיקום אחרון חוזר אל הקטע האחרון שבו עמדתם. היסטוריה שומרת את המקומות שקראתם לאחרונה.\n\nהלימוד השבועי פותח את פרשת השבוע לפי הלוח שנבחר בהגדרות: ישראל או חוץ לארץ. כשקוראים שתי פרשות מחוברות, הן נפתחות ברצף. בפרשת וזאת הברכה הלוח עוקב אחרי שמחת תורה.\n\nבחרו חומש, ואחר כך פרשה. בבראשית מופיעה תחילה הקדמת המחבר.\n\nחיפוש מוצא מילים בפירוש גם בלי ניקוד. לחיצה על תוצאה פותחת את המקום.\n\nבתוך הקריאה, דיבור המתחיל המסומן במהדורה מוצג בהדגשה. הכוכב שומר את הקטע במועדפים. לחיצה ארוכה מעתיקה או משתפת את הקטע בעברית.\n\nבהגדרות אפשר לבחור את שפת הממשק, את הלוח, ניקוד, מראה בהיר או כהה, וגודל אות. גודל האות מגיב גם לגודל הטקסט של המערכת.\n\nבמקום שאין בו פירוש, כמו בראשית פרק י׳ וויקרא פרק כ״ז, מופיעה הערה קצרה. אין באפליקציה תרגום של הפירוש.\n\nשפת הממשק מחליפה מיד את הכיתוב, את כיוון הפריסה ואת אזור התאריך. שם האפליקציה במסך הבית, חלק מגיליונות המערכת, ושפת VoiceOver נשארים לפי שפת המכשיר."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The app shows Ohr HaChaim on the Torah in Hebrew, with no network connection.\n\nResume last place returns to the passage you were reading. History keeps the places you have opened recently.\n\nThis week's parasha follows the calendar chosen in Settings: Israel or the Diaspora. When two portions are read together, they open one after the other. Vezot HaBerachah follows Simchat Torah.\n\nChoose a book, then a parasha. Genesis begins with the author's introduction.\n\nIn the reading, a dibbur hamatchil marked in the edition is emphasised. The star saves a passage to Favourites. A long press copies or shares the Hebrew passage.\n\nSettings chooses the interface language, the calendar, nikud, light or dark appearance, and type size. Type size also follows the system text-size setting.\n\nWhere the commentary is absent, such as Genesis 10 and Leviticus 27, a short note appears. The app does not translate the commentary.\n\nThe interface language changes the wording, the layout direction, and date formatting immediately. The app name on the Home Screen, some system sheets, and the VoiceOver language stay on the device language."
+            "value": "The app shows Ohr HaChaim on the Torah in Hebrew, with no network connection.\n\nResume last place returns to the passage you were reading. History keeps the places you have opened recently.\n\nThis week's parasha follows the calendar chosen in Settings: Israel or the Diaspora. When two portions are read together, they open one after the other. Vezot HaBerachah follows Simchat Torah.\n\nChoose a book, then a parasha. Genesis begins with the author's introduction.\n\nSearch finds words in the commentary even without nikud. Tapping a result opens that place.\n\nIn the reading, a dibbur hamatchil marked in the edition is emphasised. The star saves a passage to Favourites. A long press copies or shares the Hebrew passage.\n\nSettings chooses the interface language, the calendar, nikud, light or dark appearance, and type size. Type size also follows the system text-size setting.\n\nWhere the commentary is absent, such as Genesis 10 and Leviticus 27, a short note appears. The app does not translate the commentary.\n\nThe interface language changes the wording, the layout direction, and date formatting immediately. The app name on the Home Screen, some system sheets, and the VoiceOver language stay on the device language."
           }
         }
       }
@@ -789,13 +789,13 @@
         "he": {
           "stringUnit": {
             "state": "translated",
-            "value": "האפליקציה אינה מתחברת לרשת ואינה אוספת מידע."
+            "value": "האפליקציה אינה מתחברת לרשת ואינה אוספת מידע. קישור מדיניות הפרטיות נפתח בדפדפן."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The app does not use the network and does not collect information."
+            "value": "The app does not connect to the network and does not collect information. The privacy-policy link opens in the browser."
           }
         }
       }
@@ -1017,6 +1017,125 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ohr HaChaim on %@\n%@\nChapter %@, verse %@\n\n%@\n\nSource: Sefaria Vocalized Edition (CC0)"
+          }
+        }
+      }
+    },
+    "home.search": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "חיפוש"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search"
+          }
+        }
+      }
+    },
+    "search.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "חיפוש"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search"
+          }
+        }
+      }
+    },
+    "search.prompt": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מילה בפירוש"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A word in the commentary"
+          }
+        }
+      }
+    },
+    "search.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "הקלידו מילה בעברית. הניקוד אינו נדרש."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Type a Hebrew word. Nikud is not required."
+          }
+        }
+      }
+    },
+    "search.noResults": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "אין תוצאות."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No results."
+          }
+        }
+      }
+    },
+    "about.privacy": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "מדיניות פרטיות"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy policy"
+          }
+        }
+      }
+    },
+    "settings.privacy.footer": {
+      "extractionState": "manual",
+      "localizations": {
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "האפליקציה אינה אוספת מידע. הקישור נפתח בדפדפן."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The app collects no data. The link opens in the browser."
           }
         }
       }

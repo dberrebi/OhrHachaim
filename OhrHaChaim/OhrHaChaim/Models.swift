@@ -65,10 +65,18 @@ struct WeeklyReading: Identifiable, Hashable {
     var isSimchatTorah: Bool { kind == "simchat_torah" }
 }
 
+struct SearchHit: Identifiable, Hashable {
+    let comment: Comment
+    let snippet: String
+
+    var id: Int { comment.id }
+}
+
 enum SidebarItem: Hashable {
     case resume
     case history
     case weekly
+    case search
     case book(Int)
     case settings
     case help
@@ -80,6 +88,7 @@ enum SidebarItem: Hashable {
         case .resume: return "home.resume"
         case .history: return "home.history"
         case .weekly: return "home.weekly"
+        case .search: return "home.search"
         case .book(let id): return "home.book.\(id)"
         case .settings: return "home.settings"
         case .help: return "home.help"

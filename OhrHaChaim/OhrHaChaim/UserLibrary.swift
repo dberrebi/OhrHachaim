@@ -50,7 +50,20 @@ final class AppSettings {
         } else {
             fontScale = min(1.75, max(0.85, defaults.double(forKey: Key.fontScale)))
         }
-        appearance = AppearanceChoice(rawValue: defaults.string(forKey: Key.appearance) ?? "") ?? .system
+        if let forced = Self.launchValue("-appearance"), let choice = AppearanceChoice(rawValue: forced) {
+            appearance = choice
+        } else {
+            appearance = AppearanceChoice(rawValue: defaults.string(forKey: Key.appearance) ?? "") ?? .system
+        }
+    }
+
+    /// A value passed as `-flag value` on launch. Used by screenshot runs; a normal launch has none.
+    nonisolated static func launchValue(_ flag: String) -> String? {
+        let args = ProcessInfo.processInfo.arguments
+        guard let index = args.firstIndex(of: flag), index + 1 < args.count else { return nil }
+        let value = args[index + 1]
+        guard !value.hasPrefix("-") else { return nil }
+        return value
     }
 
     /// Israel only when the device region is Israel. Anywhere else starts on the diaspora calendar.

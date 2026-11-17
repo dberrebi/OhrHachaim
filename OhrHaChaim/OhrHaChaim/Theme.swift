@@ -113,6 +113,7 @@ enum StatusBarChrome {
     /// The top bar is always dark, so its status-bar icons stay light in both appearances.
     static func install() {
         let bar = UINavigationBar.appearance()
+        bar.isTranslucent = false
         bar.overrideUserInterfaceStyle = .dark
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()

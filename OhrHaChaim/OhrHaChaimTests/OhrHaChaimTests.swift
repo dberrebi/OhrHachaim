@@ -10,6 +10,28 @@ final class OhrHaChaimTests: XCTestCase {
         XCTAssertEqual(HebrewNumerals.string(21), "כ״א")
     }
 
+    func testSearchQueryDropsNikud() {
+        XCTAssertEqual(HebrewText.ftsQuery("אוֹרָה"), "\"אורה\"*")
+        XCTAssertEqual(HebrewText.ftsQuery("בראשית ברא"), "\"בראשית\"* \"ברא\"*")
+        XCTAssertEqual(HebrewText.ftsQuery("light"), "")
+    }
+
+    @MainActor
+    func testSearchFindsPointedTextFromPlainLetters() {
+        let store = CommentaryStore()
+        XCTAssertNil(store.loadError)
+        let plain = store.search("אורה")
+        XCTAssertFalse(plain.isEmpty)
+        XCTAssertTrue(plain.contains { $0.comment.body.contains("אוֹרָה") })
+        XCTAssertFalse(plain[0].snippet.isEmpty)
+        let pointed = store.search("אוֹרָה")
+        XCTAssertEqual(pointed.map(\.comment.id), plain.map(\.comment.id))
+        XCTAssertTrue(store.search("   ").isEmpty)
+        XCTAssertTrue(store.search("xyzzy").isEmpty)
+        let hit = plain[0]
+        XCTAssertNotNil(hit.comment.parashaID)
+    }
+
     func testNikudStrippingAndMarkup() {
         XCTAssertEqual(HebrewText.stripNikud("בְּרֵאשִׁית"), "בראשית")
         let marked = "<b>בְּרֵאשִׁית</b> בָּרָא"

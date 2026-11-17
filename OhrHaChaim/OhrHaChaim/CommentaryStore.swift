@@ -74,6 +74,38 @@ final class CommentaryStore {
         return rows
     }
 
+    func search(_ rawQuery: String, limit: Int = 40) -> [SearchHit] {
+        let match = HebrewText.ftsQuery(rawQuery)
+        guard !match.isEmpty, let database else { return [] }
+        var statement: OpaquePointer?
+        let sql = """
+            SELECT comment_id, snippet(comments_fts, 1, '', '', '…', 18)
+            FROM comments_fts
+            WHERE comments_fts MATCH ?
+            ORDER BY rank
+            LIMIT ?
+            """
+        guard sqlite3_prepare_v2(database, sql, -1, &statement, nil) == SQLITE_OK, let prepared = statement else {
+            sqlite3_finalize(statement)
+            return []
+        }
+        defer { sqlite3_finalize(prepared) }
+        let transient = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
+        _ = match.withCString { pointer in
+            sqlite3_bind_text(prepared, 1, pointer, -1, transient)
+        }
+        sqlite3_bind_int(prepared, 2, Int32(limit))
+        var hits: [SearchHit] = []
+        while sqlite3_step(prepared) == SQLITE_ROW {
+            let id = Int(sqlite3_column_int64(prepared, 0))
+            let snippet = columnText(prepared, 1)
+            guard let comment = comment(id: id) else { continue }
+            let visible = snippet.isEmpty ? HebrewText.preview(comment, stripNikud: true) : snippet
+            hits.append(SearchHit(comment: comment, snippet: visible))
+        }
+        return hits
+    }
+
     func comment(id: Int) -> Comment? {
         if let cached = commentsByParasha.values.joined().first(where: { $0.id == id }) {
             return cached
