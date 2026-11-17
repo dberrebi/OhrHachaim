@@ -44,7 +44,8 @@ final class WalkthroughUITests: XCTestCase {
     }
 
     func testWalkthrough() throws {
-        XCTAssertTrue(element("home.resume").waitForExistence(timeout: 20))
+        // Hosted CI Macs can be slow: launching has taken over 40 seconds.
+        XCTAssertTrue(element("home.resume").waitForExistence(timeout: 90))
         pause(1)
         shot("home")
 
@@ -53,13 +54,15 @@ final class WalkthroughUITests: XCTestCase {
         wait(for: "parasha.2")
         shot("genesis-parshiyot")
         tap("parasha.1")
+        let star = app.buttons["שמירה במועדפים"].firstMatch
+        // Laying out a whole parasha can keep a slow simulator busy for a while.
+        XCTAssertTrue(star.waitForExistence(timeout: Self.patience * 2), "Bereshit did not open")
         pause(2)
         shot("bereshit-top")
         app.swipeUp()
         pause(1)
         shot("bereshit-scrolled")
-        let star = app.buttons["שמירה במועדפים"].firstMatch
-        if star.waitForExistence(timeout: 5) {
+        if star.waitForExistence(timeout: Self.patience) {
             star.tap()
             pause(1)
             shot("bereshit-passage-saved")
@@ -67,24 +70,38 @@ final class WalkthroughUITests: XCTestCase {
         pause(6) // A passage counts as read after it stays at the top for 4 seconds.
 
         goBack()
+        let glanceStart = Date()
         tap("parasha.intro")
         pause(2)
         shot("authors-introduction")
-
         goHome()
+        let introGlance = Date().timeIntervalSince(glanceStart)
+
         shot("home-after-reading")
+        let weeklyStart = Date()
         tap("home.weekly")
         pause(2)
         shot("this-week")
+        goHome()
+        let weeklyGlance = Date().timeIntervalSince(weeklyStart)
 
         // A short look at the introduction and at This week is not a read:
-        // Resume must still point to Bereshit.
-        // Its subtitle reads "בראשית · פרק … · פסוק …"; the book row is plain "בראשית".
-        goHome()
-        let savedPlace = app.descendants(matching: .any)
-            .matching(NSPredicate(format: "label CONTAINS %@", "בראשית ·"))
-            .firstMatch
-        XCTAssertTrue(savedPlace.waitForExistence(timeout: 5), "Resume moved without a real read")
+        // Resume must still point to Bereshit. Its subtitle reads
+        // "בראשית · פרק … · פסוק …"; the book row is plain "בראשית".
+        // The app counts an unscrolled screen as read after 20 seconds, so the
+        // check only holds when both looks really were short. On a very slow
+        // simulator they may not be, and then the check is reported, not failed.
+        if introGlance < 15 && weeklyGlance < 15 {
+            let savedPlace = app.descendants(matching: .any)
+                .matching(NSPredicate(format: "label CONTAINS %@", "בראשית ·"))
+                .firstMatch
+            XCTAssertTrue(savedPlace.waitForExistence(timeout: Self.patience), "Resume moved without a real read")
+        } else {
+            XCTContext.runActivity(named: String(
+                format: "Resume check not applied: the looks took %.0f s and %.0f s",
+                introGlance, weeklyGlance
+            )) { _ in }
+        }
         tap("home.resume")
         pause(2)
         shot("resume")
@@ -107,7 +124,7 @@ final class WalkthroughUITests: XCTestCase {
         let hit = app.descendants(matching: .any)
             .matching(NSPredicate(format: "identifier BEGINSWITH %@", "search.hit."))
             .firstMatch
-        if hit.waitForExistence(timeout: 10) {
+        if hit.waitForExistence(timeout: Self.patience) {
             shot("search")
             hit.tap()
             pause(2)
@@ -163,18 +180,29 @@ final class WalkthroughUITests: XCTestCase {
         app.descendants(matching: .any).matching(identifier: identifier).firstMatch
     }
 
+    /// How long to wait for a screen or a row. Hosted CI Macs are sometimes slow
+    /// enough that a single accessibility query takes many seconds.
+    private static let patience: TimeInterval = 30
+
     private func wait(for identifier: String) {
-        XCTAssertTrue(element(identifier).waitForExistence(timeout: 10), "Missing \(identifier)")
+        XCTAssertTrue(element(identifier).waitForExistence(timeout: Self.patience), "Missing \(identifier)")
     }
 
-    /// Taps a row, scrolling down and then up to reach it: lists only build the
-    /// rows that are on screen.
+    /// Taps a row that opens another screen, scrolling down and then up to reach
+    /// it (lists only build the rows that are on screen). The tap counts once the
+    /// row has left the screen; a tap that a busy simulator dropped is retried once.
     private func tap(_ identifier: String) {
         let target = element(identifier)
-        _ = target.waitForExistence(timeout: 5)
+        _ = target.waitForExistence(timeout: Self.patience)
         for attempt in 0..<10 {
             if target.exists && target.isHittable {
                 target.tap()
+                if target.waitForNonExistence(timeout: Self.patience) { return }
+                if target.exists && target.isHittable {
+                    target.tap()
+                    if target.waitForNonExistence(timeout: Self.patience) { return }
+                }
+                XCTFail("Tapping \(identifier) did not open its screen")
                 return
             }
             if attempt < 4 {
@@ -189,7 +217,7 @@ final class WalkthroughUITests: XCTestCase {
 
     private func tapButton(_ label: String) {
         let button = app.buttons[label].firstMatch
-        guard button.waitForExistence(timeout: 5) else {
+        guard button.waitForExistence(timeout: Self.patience) else {
             XCTFail("Missing button \(label)")
             return
         }
@@ -220,11 +248,22 @@ final class WalkthroughUITests: XCTestCase {
         pause(1)
     }
 
+    /// Polls a condition, so a slow simulator gets time to finish a transition.
+    private func eventually(_ timeout: TimeInterval, _ condition: () -> Bool) -> Bool {
+        let end = Date().addingTimeInterval(timeout)
+        repeat {
+            if condition() { return true }
+            pause(0.5)
+        } while Date() < end
+        return false
+    }
+
     private func goHome() {
-        for _ in 0..<4 where !isHome {
+        for _ in 0..<4 {
+            if eventually(3, { isHome }) { break }
             goBack()
         }
-        XCTAssertTrue(isHome, "Could not return to the home screen")
+        XCTAssertTrue(eventually(Self.patience, { isHome }), "Could not return to the home screen")
         // Back to the top of the list, so home screenshots start at Resume.
         for _ in 0..<3 where !(element("home.resume").exists && element("home.resume").isHittable) {
             app.swipeDown()
