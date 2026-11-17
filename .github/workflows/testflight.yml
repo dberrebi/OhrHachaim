@@ -1,0 +1,128 @@
+name: TestFlight
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+# Do not cancel an upload that has already started. A newer push waits.
+concurrency:
+  group: testflight-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      ready: ${{ steps.gate.outputs.ready }}
+    steps:
+      - name: Check App Store Connect secrets
+        id: gate
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          set -euo pipefail
+          missing=()
+          [ -n "${APPLE_TEAM_ID:-}" ] || missing+=(APPLE_TEAM_ID)
+          [ -n "${ASC_KEY_ID:-}" ] || missing+=(ASC_KEY_ID)
+          [ -n "${ASC_ISSUER_ID:-}" ] || missing+=(ASC_ISSUER_ID)
+          [ -n "${ASC_KEY_P8:-}" ] || missing+=(ASC_KEY_P8)
+          if [ "${#missing[@]}" -gt 0 ]; then
+            echo "TestFlight upload skipped. Add these repository secrets, then run the workflow again: ${missing[*]}"
+            echo "::notice title=TestFlight skipped::Add repository secrets ${missing[*]}, then run this workflow again."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "App Store Connect secrets are present. Their values are not printed."
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  upload:
+    needs: prepare
+    if: needs.prepare.outputs.ready == 'true'
+    # macos-26 provides Xcode 26 and the iOS 26 SDK. The next step pins an Xcode 26 app.
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE=$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)
+          sudo xcode-select -s "$XCODE"
+          xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-version
+          test -d "$XCODE"
+
+      - name: Archive and upload to TestFlight
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          set -euo pipefail
+          umask 077
+          key_dir="${RUNNER_TEMP}/asc-key"
+          mkdir -p "$key_dir"
+          key_path="${key_dir}/AuthKey.p8"
+          rm_key() { rm -f "$key_path"; }
+          trap rm_key EXIT
+          printf '%s\n' "$ASC_KEY_P8" > "$key_path"
+
+          archive="${RUNNER_TEMP}/OhrHaChaim.xcarchive"
+          export_dir="${RUNNER_TEMP}/app-store-export"
+          plist="${RUNNER_TEMP}/ExportOptions.plist"
+          python3 - "$plist" "$APPLE_TEAM_ID" <<'PY'
+          import plistlib
+          import sys
+          path, team = sys.argv[1], sys.argv[2]
+          with open(path, "wb") as handle:
+              plistlib.dump(
+                  {
+                      "method": "app-store-connect",
+                      "destination": "upload",
+                      "signingStyle": "automatic",
+                      "teamID": team,
+                      "uploadSymbols": True,
+                      "manageAppVersionAndBuildNumber": False,
+                  },
+                  handle,
+              )
+          PY
+
+          xcodebuild archive \
+            -project OhrHaChaim/OhrHaChaim.xcodeproj \
+            -scheme OhrHaChaim \
+            -configuration Release \
+            -destination "generic/platform=iOS" \
+            -archivePath "$archive" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$key_path" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
+            CODE_SIGN_STYLE=Automatic \
+            CODE_SIGNING_ALLOWED=YES \
+            CODE_SIGNING_REQUIRED=YES \
+            "CODE_SIGN_IDENTITY=Apple Distribution" \
+            CURRENT_PROJECT_VERSION="${GITHUB_RUN_NUMBER}" \
+            COMPILER_INDEX_STORE_ENABLE=NO
+
+          xcodebuild -exportArchive \
+            -archivePath "$archive" \
+            -exportOptionsPlist "$plist" \
+            -exportPath "$export_dir" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$key_path" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID"
+
+          rm_key
+          trap - EXIT
+          echo "Upload finished. The .p8 file was deleted. Build number ${GITHUB_RUN_NUMBER}."
