@@ -20,7 +20,7 @@
 		0000000000004DF800000014 /* ReadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF80000002E /* ReadingView.swift */; };
 		0000000000004DF800000015 /* LibraryViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF80000002F /* LibraryViews.swift */; };
 		0000000000004DF800000016 /* InfoViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF800000030 /* InfoViews.swift */; };
-		0000000000004DF80000001E /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF80000003A /* SearchView.swift */; };
+		0000000000004DF80000003B /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF80000003A /* SearchView.swift */; };
 		0000000000004DF800000017 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF800000032 /* Assets.xcassets */; };
 		0000000000004DF800000018 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF800000033 /* Localizable.xcstrings */; };
 		0000000000004DF800000019 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF800000034 /* PrivacyInfo.xcprivacy */; };
@@ -317,7 +317,7 @@
 				0000000000004DF800000014 /* ReadingView.swift in Sources */,
 				0000000000004DF800000015 /* LibraryViews.swift in Sources */,
 				0000000000004DF800000016 /* InfoViews.swift in Sources */,
-				0000000000004DF80000001E /* SearchView.swift in Sources */,
+				0000000000004DF80000003B /* SearchView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

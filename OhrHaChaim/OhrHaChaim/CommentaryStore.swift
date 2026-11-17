@@ -90,18 +90,19 @@ final class CommentaryStore {
             return []
         }
         defer { sqlite3_finalize(prepared) }
-        let transient = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
-        _ = match.withCString { pointer in
-            sqlite3_bind_text(prepared, 1, pointer, -1, transient)
-        }
-        sqlite3_bind_int(prepared, 2, Int32(limit))
+        let encoded = Array(match.utf8) + [0]
         var hits: [SearchHit] = []
-        while sqlite3_step(prepared) == SQLITE_ROW {
-            let id = Int(sqlite3_column_int64(prepared, 0))
-            let snippet = columnText(prepared, 1)
-            guard let comment = comment(id: id) else { continue }
-            let visible = snippet.isEmpty ? HebrewText.preview(comment, stripNikud: true) : snippet
-            hits.append(SearchHit(comment: comment, snippet: visible))
+        encoded.withUnsafeBufferPointer { buffer in
+            // The pointer stays valid through sqlite3_step. A nil destructor keeps that buffer.
+            sqlite3_bind_text(prepared, 1, buffer.baseAddress, -1, nil)
+            sqlite3_bind_int(prepared, 2, Int32(limit))
+            while sqlite3_step(prepared) == SQLITE_ROW {
+                let id = Int(sqlite3_column_int64(prepared, 0))
+                let snippet = columnText(prepared, 1)
+                guard let found = comment(id: id) else { continue }
+                let visible = snippet.isEmpty ? HebrewText.preview(found, stripNikud: true) : snippet
+                hits.append(SearchHit(comment: found, snippet: visible))
+            }
         }
         return hits
     }
