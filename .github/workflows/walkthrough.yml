@@ -1,62 +1,67 @@
 name: Walkthrough
 
-# Runs the app in the iPhone simulator, taps through every screen, and uploads
-# a screen recording plus a numbered screenshot of each screen. It skips the
-# regular test suite to keep the macOS run short.
+# Runs the app in the iPhone simulator, taps through every screen (Hebrew and
+# English, light and dark), and uploads a screen recording plus a numbered
+# screenshot of each screen. It runs only WalkthroughUITests, which the regular
+# test run skips. Download the "walkthrough-iphone" artifact from the run page.
 on:
   push:
-    branches: [ccr-d921563f-qmt0au]
+    branches: [main]
+  pull_request:
   workflow_dispatch:
 
 concurrency:
-  group: walkthrough-${{ github.ref }}
+  group: walkthrough-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
   walkthrough:
-    runs-on: macos-15
-    timeout-minutes: 40
+    # Same image and Xcode as ios.yml.
+    runs-on: macos-26
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
 
-      # The same choice as ios.yml, which is known to work with this runner's
-      # default Xcode, plus an iPad from the same iOS runtime.
-      - name: Choose simulators
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE=$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)
+          sudo xcode-select -s "$XCODE"
+          xcodebuild -version
+
+      - name: Choose an iPhone simulator
         id: sim
         timeout-minutes: 3
         run: |
+          set -euo pipefail
           python3 - >> "$GITHUB_OUTPUT" <<'PY'
-          import json, subprocess, sys
+          import json, re, subprocess, sys
           raw = subprocess.check_output(["xcrun", "simctl", "list", "devices", "available", "-j"])
           devices = json.loads(raw)["devices"]
 
-          def pick(prefix, exact, runtime_filter=None):
-              for wanted_exact in (True, False):
-                  for runtime, entries in devices.items():
-                      if "iOS" not in runtime or (runtime_filter and runtime != runtime_filter):
-                          continue
-                      for device in entries:
-                          name = device.get("name", "")
-                          if not device.get("isAvailable"):
-                              continue
-                          if (wanted_exact and name == exact) or (not wanted_exact and name.startswith(prefix)):
-                              return runtime, device["udid"], name
-              return None
+          def version(runtime):
+              match = re.search(r"iOS-(\d+)-(\d+)", runtime)
+              return (int(match.group(1)), int(match.group(2))) if match else (0, 0)
 
-          iphone = pick("iPhone", "iPhone 16")
-          if iphone is None:
+          chosen = None
+          for runtime, entries in devices.items():
+              if "iOS" not in runtime:
+                  continue
+              for device in entries:
+                  name = device.get("name", "")
+                  if not device.get("isAvailable") or not name.startswith("iPhone"):
+                      continue
+                  rank = (name == "iPhone 17 Pro", version(runtime), name)
+                  if chosen is None or rank > chosen[0]:
+                      chosen = (rank, device["udid"], name, runtime)
+          if chosen is None:
               sys.exit("No available iPhone simulator")
-          ipad = pick("iPad", "iPad Pro 13-inch (M4)", iphone[0])
-          print(f"Using {iphone[2]} on {iphone[0]}", file=sys.stderr)
-          print(f"iphone={iphone[1]}")
-          if ipad:
-              print(f"Using {ipad[2]} on {ipad[0]}", file=sys.stderr)
-              print(f"ipad={ipad[1]}")
+          print(f"Using {chosen[2]} on {chosen[3]}", file=sys.stderr)
+          print(f"iphone={chosen[1]}")
           PY
-          cat "$GITHUB_OUTPUT"
 
       - name: Build
-        timeout-minutes: 15
+        timeout-minutes: 20
         run: |
           set -o pipefail
           xcodebuild build-for-testing \
@@ -69,21 +74,22 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             COMPILER_INDEX_STORE_ENABLE=NO
 
-      - name: Boot the iPhone simulator
-        timeout-minutes: 8
+      # A fresh simulator can take several minutes to boot on a hosted runner.
+      - name: Boot the simulator
+        timeout-minutes: 10
         run: |
           UDID="${{ steps.sim.outputs.iphone }}"
           xcrun simctl boot "$UDID" || true
           xcrun simctl bootstatus "$UDID" -b
           xcrun simctl status_bar "$UDID" override --time 9:41 --batteryState charged --batteryLevel 100 || true
 
-      - name: Walk through the app on iPhone and record it
-        timeout-minutes: 14
+      - name: Walk through the app and record it
+        timeout-minutes: 15
         run: |
           UDID="${{ steps.sim.outputs.iphone }}"
-          mkdir -p artifacts/iphone
+          mkdir -p artifacts/screens
           rm -rf /tmp/walkthrough-iphone
-          xcrun simctl io "$UDID" recordVideo --codec=h264 --force artifacts/walkthrough-iphone.mp4 &
+          xcrun simctl io "$UDID" recordVideo --codec=h264 --force artifacts/walkthrough.mp4 &
           RECORDER=$!
           sleep 3
           set +e
@@ -92,51 +98,22 @@ jobs:
             -scheme OhrHaChaim \
             -destination "platform=iOS Simulator,id=${UDID}" \
             -derivedDataPath "${RUNNER_TEMP}/DerivedData" \
-            -resultBundlePath "${RUNNER_TEMP}/Walkthrough.xcresult" \
             -only-testing:OhrHaChaimUITests/WalkthroughUITests \
             -test-timeouts-enabled YES \
-            -maximum-test-execution-time-allowance 480 \
+            -maximum-test-execution-time-allowance 600 \
             CODE_SIGNING_ALLOWED=NO
           STATUS=$?
           set -e
           sleep 2
           kill -INT "$RECORDER" || true
           wait "$RECORDER" || true
-          cp /tmp/walkthrough-iphone/*.png artifacts/iphone/ || true
-          ls -l artifacts artifacts/iphone
+          cp /tmp/walkthrough-iphone/*.png artifacts/screens/ || true
+          ls -l artifacts artifacts/screens
           exit $STATUS
 
-      - name: Upload the iPhone walkthrough
+      - uses: actions/upload-artifact@v4
         if: always()
-        uses: actions/upload-artifact@v4
         with:
           name: walkthrough-iphone
           path: artifacts/
           if-no-files-found: warn
-
-      - name: Open the app on iPad
-        if: always() && steps.sim.outputs.ipad != ''
-        continue-on-error: true
-        timeout-minutes: 8
-        run: |
-          UDID="${{ steps.sim.outputs.ipad }}"
-          APP="${RUNNER_TEMP}/DerivedData/Build/Products/Debug-iphonesimulator/OhrHaChaim.app"
-          test -d "$APP"
-          xcrun simctl shutdown "${{ steps.sim.outputs.iphone }}" || true
-          mkdir -p ipad
-          xcrun simctl boot "$UDID" || true
-          xcrun simctl bootstatus "$UDID" -b
-          xcrun simctl status_bar "$UDID" override --time 9:41 --batteryState charged --batteryLevel 100 || true
-          xcrun simctl install "$UDID" "$APP"
-          xcrun simctl launch "$UDID" app.ohrhachaim.OhrHaChaim
-          sleep 6
-          xcrun simctl io "$UDID" screenshot ipad/01-home.png
-          ls -l ipad
-
-      - name: Upload the iPad screenshot
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: walkthrough-ipad
-          path: ipad/
-          if-no-files-found: ignore

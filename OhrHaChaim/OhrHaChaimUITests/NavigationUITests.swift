@@ -38,6 +38,8 @@ final class WalkthroughUITests: XCTestCase {
         try FileManager.default.createDirectory(at: outputDir, withIntermediateDirectories: true)
         continueAfterFailure = true
         app = XCUIApplication()
+        // Pre-fills the search screen; the simulator keyboard cannot type Hebrew.
+        app.launchArguments = ["-search-query", "אורה"]
         app.launch()
     }
 
@@ -94,6 +96,21 @@ final class WalkthroughUITests: XCTestCase {
         shot("favourites")
 
         goHome()
+        tap("home.search")
+        let hit = app.descendants(matching: .any)
+            .matching(NSPredicate(format: "identifier BEGINSWITH %@", "search.hit."))
+            .firstMatch
+        if hit.waitForExistence(timeout: 10) {
+            shot("search")
+            hit.tap()
+            pause(2)
+            shot("search-result-opened")
+        } else {
+            XCTFail("No search results for the pre-filled query")
+            shot("search")
+        }
+
+        goHome()
         tap("home.help")
         pause(1)
         shot("help")
@@ -143,13 +160,24 @@ final class WalkthroughUITests: XCTestCase {
         XCTAssertTrue(element(identifier).waitForExistence(timeout: 10), "Missing \(identifier)")
     }
 
+    /// Taps a row, scrolling down and then up to reach it: lists only build the
+    /// rows that are on screen.
     private func tap(_ identifier: String) {
         let target = element(identifier)
-        guard target.waitForExistence(timeout: 10) else {
-            XCTFail("Missing \(identifier)")
-            return
+        _ = target.waitForExistence(timeout: 5)
+        for attempt in 0..<10 {
+            if target.exists && target.isHittable {
+                target.tap()
+                return
+            }
+            if attempt < 4 {
+                app.swipeUp()
+            } else {
+                app.swipeDown()
+            }
+            pause(0.5)
         }
-        target.tap()
+        XCTFail("Missing \(identifier)")
     }
 
     private func tapButton(_ label: String) {
@@ -161,24 +189,39 @@ final class WalkthroughUITests: XCTestCase {
         button.tap()
     }
 
+    /// Home is the root of the stack: it has no back button, and its rows exist.
+    private var isHome: Bool {
+        guard !app.navigationBars.buttons["BackButton"].exists else { return false }
+        return ["home.resume", "home.search", "home.settings", "home.about"]
+            .contains { element($0).exists }
+    }
+
     private func goBack() {
-        let bar = app.navigationBars.firstMatch
-        let back = bar.buttons["BackButton"]
+        let buttons = app.navigationBars.buttons
+        let back = buttons["BackButton"]
         if back.exists {
             back.tap()
-        } else if bar.buttons.count > 0 {
-            bar.buttons.element(boundBy: 0).tap()
+        } else {
+            // Fallback: the first bar button that is not Share.
+            for index in 0..<buttons.count {
+                let button = buttons.element(boundBy: index)
+                if ["שיתוף", "Share"].contains(button.label) { continue }
+                button.tap()
+                break
+            }
         }
         pause(1)
     }
 
     private func goHome() {
-        for _ in 0..<4 {
-            let home = element("home.resume")
-            if home.exists && home.isHittable {
-                return
-            }
+        for _ in 0..<4 where !isHome {
             goBack()
+        }
+        XCTAssertTrue(isHome, "Could not return to the home screen")
+        // Back to the top of the list, so home screenshots start at Resume.
+        for _ in 0..<3 where !(element("home.resume").exists && element("home.resume").isHittable) {
+            app.swipeDown()
+            pause(0.5)
         }
     }
 
