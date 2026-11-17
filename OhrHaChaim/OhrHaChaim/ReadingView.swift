@@ -43,8 +43,16 @@ struct ReadingView: View {
     @State private var allowTracking = false
     @State private var trackedCommentID: Int?
     @State private var initialTopID: Int?
-    @State private var initialMarkedAt = Date()
+    @State private var topID: Int?
+    @State private var hasScrolled = false
     @State private var dwell: Task<Void, Never>?
+
+    /// A passage becomes the saved place only after it stays at the top this long
+    /// once the reader has scrolled, so flicking through a parasha does not count.
+    private static let settleDelay: UInt64 = 4_000_000_000
+    /// Without any scrolling, the passage a screen opened on counts only after this
+    /// long, so opening This week or the introduction just to look does not count.
+    private static let openingDelay: UInt64 = 20_000_000_000
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -236,29 +244,28 @@ struct ReadingView: View {
         HebrewText.citation(chapter: chapter, verse: verse, language: settings.language)
     }
 
-    /// Opening a parasha does not replace the saved place. A scroll, or staying to read, does.
+    /// Only a real read replaces the saved place (Resume and History): a passage that
+    /// stays at the top for a while. Opening a screen to look, or flicking through it,
+    /// does not. Leaving the screen first cancels the pending save.
     private func noteVisibleComment(_ anchors: [ReadingAnchor]) {
         guard allowTracking else { return }
         let nearTop = anchors.filter { $0.minY >= -8 && $0.minY < 140 }
-        guard let pick = nearTop.min(by: { $0.minY < $1.minY }),
-              let comment = store.comment(id: pick.id) else { return }
+        guard let pick = nearTop.min(by: { $0.minY < $1.minY }), pick.id != topID else { return }
+        topID = pick.id
         if initialTopID == nil {
             initialTopID = pick.id
-            initialMarkedAt = Date()
-            dwell?.cancel()
-            dwell = Task { @MainActor in
-                try? await Task.sleep(nanoseconds: 2_000_000_000)
-                guard !Task.isCancelled, trackedCommentID == nil else { return }
-                trackedCommentID = comment.id
-                library.note(comment)
-            }
-            return
+        } else if pick.id != initialTopID {
+            hasScrolled = true
         }
-        let moved = pick.id != initialTopID && Date().timeIntervalSince(initialMarkedAt) > 0.35
-        guard moved, pick.id != trackedCommentID else { return }
+        let delay = hasScrolled ? Self.settleDelay : Self.openingDelay
+        let id = pick.id
         dwell?.cancel()
-        trackedCommentID = pick.id
-        library.note(comment)
+        dwell = Task { @MainActor in
+            try? await Task.sleep(nanoseconds: delay)
+            guard !Task.isCancelled, id != trackedCommentID, let comment = store.comment(id: id) else { return }
+            trackedCommentID = id
+            library.note(comment)
+        }
     }
 
     private func anchor(for id: Int) -> some View {

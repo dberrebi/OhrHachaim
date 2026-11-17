@@ -1,0 +1,119 @@
+name: Walkthrough
+
+# Runs the app in the iPhone simulator, taps through every screen (Hebrew and
+# English, light and dark), and uploads a screen recording plus a numbered
+# screenshot of each screen. It runs only WalkthroughUITests, which the regular
+# test run skips. Download the "walkthrough-iphone" artifact from the run page.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: walkthrough-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  walkthrough:
+    # Same image and Xcode as ios.yml.
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE=$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)
+          sudo xcode-select -s "$XCODE"
+          xcodebuild -version
+
+      - name: Choose an iPhone simulator
+        id: sim
+        timeout-minutes: 3
+        run: |
+          set -euo pipefail
+          python3 - >> "$GITHUB_OUTPUT" <<'PY'
+          import json, re, subprocess, sys
+          raw = subprocess.check_output(["xcrun", "simctl", "list", "devices", "available", "-j"])
+          devices = json.loads(raw)["devices"]
+
+          def version(runtime):
+              match = re.search(r"iOS-(\d+)-(\d+)", runtime)
+              return (int(match.group(1)), int(match.group(2))) if match else (0, 0)
+
+          chosen = None
+          for runtime, entries in devices.items():
+              if "iOS" not in runtime:
+                  continue
+              for device in entries:
+                  name = device.get("name", "")
+                  if not device.get("isAvailable") or not name.startswith("iPhone"):
+                      continue
+                  rank = (name == "iPhone 17 Pro", version(runtime), name)
+                  if chosen is None or rank > chosen[0]:
+                      chosen = (rank, device["udid"], name, runtime)
+          if chosen is None:
+              sys.exit("No available iPhone simulator")
+          print(f"Using {chosen[2]} on {chosen[3]}", file=sys.stderr)
+          print(f"iphone={chosen[1]}")
+          PY
+
+      - name: Build
+        timeout-minutes: 20
+        run: |
+          set -o pipefail
+          xcodebuild build-for-testing \
+            -project OhrHaChaim/OhrHaChaim.xcodeproj \
+            -scheme OhrHaChaim \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.iphone }}" \
+            -derivedDataPath "${RUNNER_TEMP}/DerivedData" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            COMPILER_INDEX_STORE_ENABLE=NO
+
+      # A fresh simulator can take several minutes to boot on a hosted runner.
+      - name: Boot the simulator
+        timeout-minutes: 10
+        run: |
+          UDID="${{ steps.sim.outputs.iphone }}"
+          xcrun simctl boot "$UDID" || true
+          xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl status_bar "$UDID" override --time 9:41 --batteryState charged --batteryLevel 100 || true
+
+      - name: Walk through the app and record it
+        timeout-minutes: 15
+        run: |
+          UDID="${{ steps.sim.outputs.iphone }}"
+          mkdir -p artifacts/screens
+          rm -rf /tmp/walkthrough-iphone
+          xcrun simctl io "$UDID" recordVideo --codec=h264 --force artifacts/walkthrough.mp4 &
+          RECORDER=$!
+          sleep 3
+          set +e
+          TEST_RUNNER_WALKTHROUGH_DIR=/tmp/walkthrough-iphone xcodebuild test-without-building \
+            -project OhrHaChaim/OhrHaChaim.xcodeproj \
+            -scheme OhrHaChaim \
+            -destination "platform=iOS Simulator,id=${UDID}" \
+            -derivedDataPath "${RUNNER_TEMP}/DerivedData" \
+            -only-testing:OhrHaChaimUITests/WalkthroughUITests \
+            -test-timeouts-enabled YES \
+            -maximum-test-execution-time-allowance 600 \
+            CODE_SIGNING_ALLOWED=NO
+          STATUS=$?
+          set -e
+          sleep 2
+          kill -INT "$RECORDER" || true
+          wait "$RECORDER" || true
+          cp /tmp/walkthrough-iphone/*.png artifacts/screens/ || true
+          ls -l artifacts artifacts/screens
+          exit $STATUS
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: walkthrough-iphone
+          path: artifacts/
+          if-no-files-found: warn
