@@ -8,7 +8,7 @@ The app does not use the network at runtime, and it has no analytics.
 
 ## Open and run
 
-Requirements: Xcode 15 or later to build locally, and a deployment target of iOS 17. The project is `OhrHaChaim/OhrHaChaim.xcodeproj`. Apple has required Xcode 26 for App Store uploads since 28 April 2026. This repository does not upload a build. GitHub Actions uses the `macos-26` runner and selects Xcode 26, which includes the iOS 26 SDK, while the deployment target stays iOS 17.
+Requirements: Xcode 15 or later to build locally, and a deployment target of iOS 17. To build from source, clone [dberrebi/OhrHachaim](https://github.com/dberrebi/OhrHachaim) and open `OhrHaChaim/OhrHaChaim.xcodeproj`. Apple has required Xcode 26 for App Store uploads since 28 April 2026. This repository does not upload a build. GitHub Actions uses the `macos-26` runner and selects Xcode 26, which includes the iOS 26 SDK, while the deployment target stays iOS 17.
 
 No Apple Developer account is configured. Signing is turned off in the target so the project can compile without a team:
 
@@ -105,7 +105,7 @@ The weekly table comes from Hebcal's calendar API (`s=on` for the Shabbat parash
 
 ## Privacy and support pages
 
-`docs/index.html` is a short support page in Hebrew and English. `docs/privacy/index.html` is the privacy policy, also in both languages: the app collects no data, has no analytics, and makes no network request of its own. History, favourites, and settings stay on the device. The in-app links in About and Settings point at:
+`docs/index.html` is the support page for people using the app, in Hebrew and English. It describes the offline Hebrew commentary, points to the GitHub issue tracker for help, links to the privacy policy, and includes the optional PayPal donation. Building from source is documented in this README, not on that page. `docs/privacy/index.html` is the privacy policy, also in both languages: the app collects no data, has no analytics, and makes no network request of its own. History, favourites, and settings stay on the device. The in-app links in About and Settings point at:
 
 - https://dberrebi.github.io/OhrHachaim/
 - https://dberrebi.github.io/OhrHachaim/privacy/
