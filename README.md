@@ -140,6 +140,8 @@ The weekly table comes from Hebcal's calendar API (`s=on` for the Shabbat parash
 
 Those URLs work after GitHub Pages is enabled for the repository (Settings → Pages → Deploy from a branch → `main` → `/docs`). This repository does not change that setting. `docs/app-store-listing.md` is a store-listing draft and is excluded from the Pages site.
 
+An optional donation link lives only on that website support page. The iOS app, its About and Help screens, and the App Store listing do not ask for a donation. Apple guideline 3.1.1(a) forbids that outside the US storefront. An in-app tip jar, as an in-app purchase, can be added later, once a paid Apple Developer account exists.
+
 ## Not included
 
-No signing team is stored in the project. TestFlight signing happens only in GitHub Actions, and only after the four secrets above are set. There are no payments. Readings outside 2024–2038 need a new run of the data script.
+No signing team is stored in the project. TestFlight signing happens only in GitHub Actions, and only after the four secrets above are set. There is no in-app payment. Readings outside 2024–2038 need a new run of the data script.

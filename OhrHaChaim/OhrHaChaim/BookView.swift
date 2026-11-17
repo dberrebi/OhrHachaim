@@ -41,15 +41,24 @@ struct ResumeView: View {
     @Environment(CommentaryStore.self) private var store
     @Environment(UserLibrary.self) private var library
     @Environment(\.colorScheme) private var scheme
+    /// The place to resume, fixed when this screen opens. Reading here moves
+    /// `lastCommentID`; following it would rebuild the whole page each time.
+    @State private var openedAt: Int?
 
     var body: some View {
+        let id = openedAt ?? library.lastCommentID
         Group {
-            if let id = library.lastCommentID, let comment = store.comment(id: id) {
+            if let id, let comment = store.comment(id: id) {
                 ReadingView(route: library.route(for: comment))
-            } else if library.lastCommentID != nil {
+            } else if id != nil {
                 message(L10n.text("reading.missingPlace", settings.language))
             } else {
                 message(L10n.text("home.resume.empty", settings.language))
+            }
+        }
+        .onAppear {
+            if openedAt == nil {
+                openedAt = library.lastCommentID
             }
         }
     }
