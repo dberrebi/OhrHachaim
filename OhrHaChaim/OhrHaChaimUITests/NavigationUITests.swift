@@ -64,7 +64,7 @@ final class WalkthroughUITests: XCTestCase {
             pause(1)
             shot("bereshit-passage-saved")
         }
-        pause(4) // Let the reading position settle so Resume has a place.
+        pause(6) // A passage counts as read after it stays at the top for 4 seconds.
 
         goBack()
         tap("parasha.intro")
@@ -77,7 +77,14 @@ final class WalkthroughUITests: XCTestCase {
         pause(2)
         shot("this-week")
 
+        // A short look at the introduction and at This week is not a read:
+        // Resume must still point to Bereshit.
+        // Its subtitle reads "בראשית · פרק … · פסוק …"; the book row is plain "בראשית".
         goHome()
+        let savedPlace = app.descendants(matching: .any)
+            .matching(NSPredicate(format: "label CONTAINS %@", "בראשית ·"))
+            .firstMatch
+        XCTAssertTrue(savedPlace.waitForExistence(timeout: 5), "Resume moved without a real read")
         tap("home.resume")
         pause(2)
         shot("resume")
