@@ -2,6 +2,8 @@ name: iOS
 
 on:
   push:
+    # The walkthrough branch runs walkthrough.yml instead, so each push starts one macOS run.
+    branches-ignore: [ccr-d921563f-qmt0au]
   pull_request:
 
 # A same-repo pull request is already built by its push. Fork pull requests

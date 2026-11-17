@@ -1,0 +1,112 @@
+name: Walkthrough
+
+# Runs the app in the iPhone simulator, taps through every screen, and uploads
+# a screen recording plus a numbered screenshot of each screen. It skips the
+# regular test suite to keep the macOS run short.
+on:
+  push:
+    branches: [ccr-d921563f-qmt0au]
+  workflow_dispatch:
+
+concurrency:
+  group: walkthrough-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  walkthrough:
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Choose simulators
+        id: sim
+        run: |
+          pick() {
+            python3 - "$1" "$2" <<'PY'
+          import json, re, subprocess, sys
+          prefix, exact = sys.argv[1], sys.argv[2]
+          raw = subprocess.check_output(["xcrun", "simctl", "list", "devices", "available", "-j"])
+          found = []
+          for runtime, entries in json.loads(raw)["devices"].items():
+              if "iOS" not in runtime:
+                  continue
+              version = [int(n) for n in re.findall(r"\d+", runtime)]
+              for device in entries:
+                  name = device.get("name", "")
+                  if device.get("isAvailable") and name.startswith(prefix):
+                      found.append((name != exact, [-n for n in version], device["udid"], name))
+          if not found:
+              sys.exit(f"No available {prefix} simulator")
+          found.sort()
+          print(found[0][2])
+          print(found[0][3], file=sys.stderr)
+          PY
+          }
+          echo "iphone=$(pick iPhone 'iPhone 16')" >> "$GITHUB_OUTPUT"
+          echo "ipad=$(pick iPad 'iPad Pro 13-inch (M4)')" >> "$GITHUB_OUTPUT"
+
+      - name: Build
+        run: |
+          set -o pipefail
+          xcodebuild build-for-testing \
+            -project OhrHaChaim/OhrHaChaim.xcodeproj \
+            -scheme OhrHaChaim \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.iphone }}" \
+            -derivedDataPath "${RUNNER_TEMP}/DerivedData" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            COMPILER_INDEX_STORE_ENABLE=NO
+
+      - name: Walk through the app on iPhone and record it
+        run: |
+          UDID="${{ steps.sim.outputs.iphone }}"
+          mkdir -p artifacts
+          rm -rf /tmp/walkthrough-iphone
+          xcrun simctl boot "$UDID" || true
+          xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl status_bar "$UDID" override --time 9:41 --batteryState charged --batteryLevel 100 || true
+          xcrun simctl io "$UDID" recordVideo --codec=h264 --force artifacts/walkthrough-iphone.mp4 &
+          RECORDER=$!
+          sleep 3
+          set +e
+          TEST_RUNNER_WALKTHROUGH_DIR=/tmp/walkthrough-iphone xcodebuild test-without-building \
+            -project OhrHaChaim/OhrHaChaim.xcodeproj \
+            -scheme OhrHaChaim \
+            -destination "platform=iOS Simulator,id=${UDID}" \
+            -derivedDataPath "${RUNNER_TEMP}/DerivedData" \
+            -only-testing:OhrHaChaimUITests/WalkthroughUITests \
+            CODE_SIGNING_ALLOWED=NO
+          STATUS=$?
+          set -e
+          sleep 2
+          kill -INT "$RECORDER" || true
+          wait "$RECORDER" || true
+          mkdir -p artifacts/iphone
+          cp /tmp/walkthrough-iphone/*.png artifacts/iphone/ || true
+          ls -l artifacts artifacts/iphone
+          exit $STATUS
+
+      - name: Open the app on iPad
+        if: always()
+        run: |
+          UDID="${{ steps.sim.outputs.ipad }}"
+          APP="${RUNNER_TEMP}/DerivedData/Build/Products/Debug-iphonesimulator/OhrHaChaim.app"
+          test -d "$APP"
+          mkdir -p artifacts/ipad
+          xcrun simctl boot "$UDID" || true
+          xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl status_bar "$UDID" override --time 9:41 --batteryState charged --batteryLevel 100 || true
+          xcrun simctl install "$UDID" "$APP"
+          xcrun simctl launch "$UDID" app.ohrhachaim.OhrHaChaim
+          sleep 6
+          xcrun simctl io "$UDID" screenshot artifacts/ipad/01-home.png
+          ls -l artifacts/ipad
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: walkthrough
+          path: artifacts/
+          if-no-files-found: warn
