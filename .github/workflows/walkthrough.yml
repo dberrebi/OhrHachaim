@@ -15,38 +15,48 @@ concurrency:
 jobs:
   walkthrough:
     runs-on: macos-15
-    timeout-minutes: 30
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
 
+      # The same choice as ios.yml, which is known to work with this runner's
+      # default Xcode, plus an iPad from the same iOS runtime.
       - name: Choose simulators
         id: sim
+        timeout-minutes: 3
         run: |
-          pick() {
-            python3 - "$1" "$2" <<'PY'
-          import json, re, subprocess, sys
-          prefix, exact = sys.argv[1], sys.argv[2]
+          python3 - >> "$GITHUB_OUTPUT" <<'PY'
+          import json, subprocess, sys
           raw = subprocess.check_output(["xcrun", "simctl", "list", "devices", "available", "-j"])
-          found = []
-          for runtime, entries in json.loads(raw)["devices"].items():
-              if "iOS" not in runtime:
-                  continue
-              version = [int(n) for n in re.findall(r"\d+", runtime)]
-              for device in entries:
-                  name = device.get("name", "")
-                  if device.get("isAvailable") and name.startswith(prefix):
-                      found.append((name != exact, [-n for n in version], device["udid"], name))
-          if not found:
-              sys.exit(f"No available {prefix} simulator")
-          found.sort()
-          print(found[0][2])
-          print(found[0][3], file=sys.stderr)
+          devices = json.loads(raw)["devices"]
+
+          def pick(prefix, exact, runtime_filter=None):
+              for wanted_exact in (True, False):
+                  for runtime, entries in devices.items():
+                      if "iOS" not in runtime or (runtime_filter and runtime != runtime_filter):
+                          continue
+                      for device in entries:
+                          name = device.get("name", "")
+                          if not device.get("isAvailable"):
+                              continue
+                          if (wanted_exact and name == exact) or (not wanted_exact and name.startswith(prefix)):
+                              return runtime, device["udid"], name
+              return None
+
+          iphone = pick("iPhone", "iPhone 16")
+          if iphone is None:
+              sys.exit("No available iPhone simulator")
+          ipad = pick("iPad", "iPad Pro 13-inch (M4)", iphone[0])
+          print(f"Using {iphone[2]} on {iphone[0]}", file=sys.stderr)
+          print(f"iphone={iphone[1]}")
+          if ipad:
+              print(f"Using {ipad[2]} on {ipad[0]}", file=sys.stderr)
+              print(f"ipad={ipad[1]}")
           PY
-          }
-          echo "iphone=$(pick iPhone 'iPhone 16')" >> "$GITHUB_OUTPUT"
-          echo "ipad=$(pick iPad 'iPad Pro 13-inch (M4)')" >> "$GITHUB_OUTPUT"
+          cat "$GITHUB_OUTPUT"
 
       - name: Build
+        timeout-minutes: 15
         run: |
           set -o pipefail
           xcodebuild build-for-testing \
@@ -59,14 +69,20 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             COMPILER_INDEX_STORE_ENABLE=NO
 
-      - name: Walk through the app on iPhone and record it
+      - name: Boot the iPhone simulator
+        timeout-minutes: 8
         run: |
           UDID="${{ steps.sim.outputs.iphone }}"
-          mkdir -p artifacts
-          rm -rf /tmp/walkthrough-iphone
           xcrun simctl boot "$UDID" || true
           xcrun simctl bootstatus "$UDID" -b
           xcrun simctl status_bar "$UDID" override --time 9:41 --batteryState charged --batteryLevel 100 || true
+
+      - name: Walk through the app on iPhone and record it
+        timeout-minutes: 14
+        run: |
+          UDID="${{ steps.sim.outputs.iphone }}"
+          mkdir -p artifacts/iphone
+          rm -rf /tmp/walkthrough-iphone
           xcrun simctl io "$UDID" recordVideo --codec=h264 --force artifacts/walkthrough-iphone.mp4 &
           RECORDER=$!
           sleep 3
@@ -76,37 +92,51 @@ jobs:
             -scheme OhrHaChaim \
             -destination "platform=iOS Simulator,id=${UDID}" \
             -derivedDataPath "${RUNNER_TEMP}/DerivedData" \
+            -resultBundlePath "${RUNNER_TEMP}/Walkthrough.xcresult" \
             -only-testing:OhrHaChaimUITests/WalkthroughUITests \
+            -test-timeouts-enabled YES \
+            -maximum-test-execution-time-allowance 480 \
             CODE_SIGNING_ALLOWED=NO
           STATUS=$?
           set -e
           sleep 2
           kill -INT "$RECORDER" || true
           wait "$RECORDER" || true
-          mkdir -p artifacts/iphone
           cp /tmp/walkthrough-iphone/*.png artifacts/iphone/ || true
           ls -l artifacts artifacts/iphone
           exit $STATUS
 
-      - name: Open the app on iPad
+      - name: Upload the iPhone walkthrough
         if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: walkthrough-iphone
+          path: artifacts/
+          if-no-files-found: warn
+
+      - name: Open the app on iPad
+        if: always() && steps.sim.outputs.ipad != ''
+        continue-on-error: true
+        timeout-minutes: 8
         run: |
           UDID="${{ steps.sim.outputs.ipad }}"
           APP="${RUNNER_TEMP}/DerivedData/Build/Products/Debug-iphonesimulator/OhrHaChaim.app"
           test -d "$APP"
-          mkdir -p artifacts/ipad
+          xcrun simctl shutdown "${{ steps.sim.outputs.iphone }}" || true
+          mkdir -p ipad
           xcrun simctl boot "$UDID" || true
           xcrun simctl bootstatus "$UDID" -b
           xcrun simctl status_bar "$UDID" override --time 9:41 --batteryState charged --batteryLevel 100 || true
           xcrun simctl install "$UDID" "$APP"
           xcrun simctl launch "$UDID" app.ohrhachaim.OhrHaChaim
           sleep 6
-          xcrun simctl io "$UDID" screenshot artifacts/ipad/01-home.png
-          ls -l artifacts/ipad
+          xcrun simctl io "$UDID" screenshot ipad/01-home.png
+          ls -l ipad
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload the iPad screenshot
         if: always()
+        uses: actions/upload-artifact@v4
         with:
-          name: walkthrough
-          path: artifacts/
-          if-no-files-found: warn
+          name: walkthrough-ipad
+          path: ipad/
+          if-no-files-found: ignore
