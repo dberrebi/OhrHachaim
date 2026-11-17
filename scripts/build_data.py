@@ -161,6 +161,8 @@ class ParashaRow:
 
 
 def self_test() -> None:
+    assert plain_commentary("<b>בְּרֵאשִׁית</b> בָּרָא") == "בראשית ברא"
+    assert plain_commentary("אוֹרָה") == "אורה"
     assert parse_range("Or HaChaim on Leviticus 26:3:1-45:2") == ((26, 3, 1), (26, 45, 2))
     assert parse_range("Or HaChaim on Deuteronomy 31:1:1-27:3") == ((31, 1, 1), (31, 27, 3))
     assert parse_range("Or HaChaim on Deuteronomy 32:1:1-52:3") == ((32, 1, 1), (32, 52, 3))
@@ -187,6 +189,36 @@ def self_test() -> None:
         got = resolve_hebcal_title(title)
         if got != expected:
             fail(f"title map {title!r} -> {got} expected {expected}")
+
+
+# Hebrew points and cantillation. Matches HebrewText.stripNikud in the app.
+_NIKUD_OR_CANTILLATION = re.compile(r"[\u0591-\u05bd\u05bf\u05c1\u05c2\u05c4\u05c5\u05c7]")
+_MARKUP_TAG = re.compile(r"</?b>")
+
+
+def plain_commentary(markup: str) -> str:
+    text = _MARKUP_TAG.sub("", markup)
+    text = _NIKUD_OR_CANTILLATION.sub("", text)
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def add_search_index(connection: sqlite3.Connection) -> None:
+    """FTS5 over commentary with nikud and cantillation removed, so a plain-letter query matches."""
+    connection.execute("DROP TABLE IF EXISTS comments_fts")
+    connection.execute(
+        """
+        CREATE VIRTUAL TABLE comments_fts USING fts5(
+            comment_id UNINDEXED,
+            plain,
+            tokenize = 'unicode61 remove_diacritics 2'
+        )
+        """
+    )
+    rows = [
+        (comment_id, plain_commentary(f"{dibbur} {body}"))
+        for comment_id, dibbur, body in connection.execute("SELECT id, dibbur, body FROM comments")
+    ]
+    connection.executemany("INSERT INTO comments_fts (comment_id, plain) VALUES (?, ?)", rows)
 
 
 def fail(message: str) -> None:
@@ -787,6 +819,7 @@ def write_database(
             weekly_rows,
         )
         connection.executemany("INSERT INTO meta (key, value) VALUES (?, ?)", list(meta.items()))
+        add_search_index(connection)
         connection.commit()
         connection.execute("VACUUM")
     finally:
@@ -915,6 +948,22 @@ def validate_database(path: Path, year_start: int, year_end: int) -> dict:
         ).fetchone()
         if opening is None or "אוֹרָה" not in opening["body"]:
             fail("Genesis 1:1 does not start with the expected vocalized opening")
+        fts = connection.execute(
+            "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'comments_fts'"
+        ).fetchone()
+        if fts is None:
+            fail("comments_fts is missing")
+        plain = connection.execute(
+            """
+            SELECT comment_id, plain FROM comments_fts
+            WHERE comments_fts MATCH '"אורה"*'
+            LIMIT 5
+            """
+        ).fetchall()
+        if not plain:
+            fail("plain-letter search for אורה found nothing")
+        if not any("אורה" in row["plain"] and "אוֹרָה" not in row["plain"] for row in plain):
+            fail("search index still contains nikud")
         max_index = connection.execute("SELECT MAX(comment_index) AS n FROM comments").fetchone()["n"]
         if max_index >= 1000:
             fail("comment index overflowed the stable id width")
@@ -1076,9 +1125,23 @@ def main() -> None:
         action="store_true",
         help="Check an existing database without downloading",
     )
+    parser.add_argument(
+        "--index-only",
+        action="store_true",
+        help="Rebuild the FTS5 search index on an existing database without downloading",
+    )
     args = parser.parse_args()
     self_test()
-    if args.validate_only:
+    if args.index_only:
+        connection = sqlite3.connect(args.output)
+        try:
+            add_search_index(connection)
+            connection.commit()
+            connection.execute("VACUUM")
+        finally:
+            connection.close()
+        print(f"rebuilt search index in {args.output}")
+    if args.validate_only or args.index_only:
         stats = validate_database(args.output, args.year_start, args.year_end)
         print(json.dumps(stats, ensure_ascii=False, indent=2))
         return

@@ -62,6 +62,16 @@ struct SettingsView: View {
             } header: {
                 Text(L10n.text("settings.appearance", settings.language))
             }
+
+            Section {
+                Link(destination: AppLinks.privacy) {
+                    Text(L10n.text("about.privacy", settings.language))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .accessibilityIdentifier("settings.privacy")
+            } footer: {
+                Text(L10n.text("settings.privacy.footer", settings.language))
+            }
         }
         .scrollContentBackground(.hidden)
         .background(Theme.background(scheme))
@@ -115,6 +125,12 @@ struct AboutView: View {
                     .foregroundStyle(Theme.secondary(scheme))
                     .multilineTextAlignment(.leading)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                Link(destination: AppLinks.privacy) {
+                    Text(L10n.text("about.privacy", settings.language))
+                        .font(.body)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .accessibilityIdentifier("about.privacy")
             }
             .padding(22)
             .frame(maxWidth: 740)

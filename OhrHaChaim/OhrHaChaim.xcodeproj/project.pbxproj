@@ -20,6 +20,7 @@
 		0000000000004DF800000014 /* ReadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF80000002E /* ReadingView.swift */; };
 		0000000000004DF800000015 /* LibraryViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF80000002F /* LibraryViews.swift */; };
 		0000000000004DF800000016 /* InfoViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF800000030 /* InfoViews.swift */; };
+		0000000000004DF80000003B /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF80000003A /* SearchView.swift */; };
 		0000000000004DF800000017 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF800000032 /* Assets.xcassets */; };
 		0000000000004DF800000018 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF800000033 /* Localizable.xcstrings */; };
 		0000000000004DF800000019 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 0000000000004DF800000034 /* PrivacyInfo.xcprivacy */; };
@@ -29,6 +30,7 @@
 		0000000000004DF80000001D /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0000000000004DF800000038 /* libsqlite3.tbd */; };
 		A4DF80000000000000000012 /* OhrHaChaimTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4DF80000000000000000011 /* OhrHaChaimTests.swift */; };
 		B4DF80000000000000000012 /* NavigationUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4DF80000000000000000011 /* NavigationUITests.swift */; };
+		C4DF80000000000000000012 /* StoreScreenshotUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4DF80000000000000000011 /* StoreScreenshotUITests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -45,6 +47,7 @@
 		0000000000004DF80000002E /* ReadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadingView.swift; sourceTree = "<group>"; };
 		0000000000004DF80000002F /* LibraryViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryViews.swift; sourceTree = "<group>"; };
 		0000000000004DF800000030 /* InfoViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViews.swift; sourceTree = "<group>"; };
+		0000000000004DF80000003A /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		0000000000004DF800000031 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0000000000004DF800000032 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Resources/Assets.xcassets"; sourceTree = "<group>"; };
 		0000000000004DF800000033 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = "Resources/Localizable.xcstrings"; sourceTree = "<group>"; };
@@ -57,6 +60,7 @@
 		A4DF80000000000000000011 /* OhrHaChaimTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OhrHaChaimTests.swift; sourceTree = "<group>"; };
 		A4DF8000000000000000001B /* OhrHaChaimTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OhrHaChaimTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B4DF80000000000000000011 /* NavigationUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationUITests.swift; sourceTree = "<group>"; };
+		C4DF80000000000000000011 /* StoreScreenshotUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreScreenshotUITests.swift; sourceTree = "<group>"; };
 		B4DF8000000000000000001B /* OhrHaChaimUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OhrHaChaimUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -102,6 +106,7 @@
 				0000000000004DF80000002E /* ReadingView.swift */,
 				0000000000004DF80000002F /* LibraryViews.swift */,
 				0000000000004DF800000030 /* InfoViews.swift */,
+				0000000000004DF80000003A /* SearchView.swift */,
 				0000000000004DF800000031 /* Info.plist */,
 				0000000000004DF800000032 /* Assets.xcassets */,
 				0000000000004DF800000033 /* Localizable.xcstrings */,
@@ -143,6 +148,7 @@
 			isa = PBXGroup;
 			children = (
 				B4DF80000000000000000011 /* NavigationUITests.swift */,
+				C4DF80000000000000000011 /* StoreScreenshotUITests.swift */,
 			);
 			path = OhrHaChaimUITests;
 			sourceTree = "<group>";
@@ -311,6 +317,7 @@
 				0000000000004DF800000014 /* ReadingView.swift in Sources */,
 				0000000000004DF800000015 /* LibraryViews.swift in Sources */,
 				0000000000004DF800000016 /* InfoViews.swift in Sources */,
+				0000000000004DF80000003B /* SearchView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -327,6 +334,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B4DF80000000000000000012 /* NavigationUITests.swift in Sources */,
+				C4DF80000000000000000012 /* StoreScreenshotUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

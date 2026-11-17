@@ -11,6 +11,7 @@ struct HomeView: View {
             row(.resume, title: L10n.text("home.resume", settings.language), subtitle: resumeSubtitle)
             row(.history, title: L10n.text("home.history", settings.language), subtitle: nil)
             row(.weekly, title: L10n.text("home.weekly", settings.language), subtitle: weeklySubtitle)
+            row(.search, title: L10n.text("home.search", settings.language), subtitle: nil)
             ForEach(store.books) { book in
                 row(
                     .book(book.id),
