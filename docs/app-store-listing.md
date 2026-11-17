@@ -56,6 +56,10 @@ Data Not Collected.
 
 The app has no account, no analytics, and no network calls of its own. History, favourites, and settings remain on the device. See `docs/privacy/index.html`.
 
+## Donations
+
+The app is free. Donations stay on the website support page only. This listing, and the app, must not include a donate button, a PayPal link, or a “support us” call to action. Apple guideline 3.1.1(a) forbids that outside the US storefront. An in-app tip jar (an in-app purchase) can be added later, once a paid Apple Developer account exists.
+
 ## URLs
 
 These addresses match the pages in `docs/`. They answer only after GitHub Pages is turned on for this repository.
