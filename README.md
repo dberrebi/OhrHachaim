@@ -8,7 +8,7 @@ The app does not use the network at runtime, and it has no analytics.
 
 ## Open and run
 
-Requirements: Xcode 15 or later to build locally, and a deployment target of iOS 17. The project is `OhrHaChaim/OhrHaChaim.xcodeproj`. Apple has required Xcode 26 for App Store uploads since 28 April 2026. This repository does not upload a build. GitHub Actions uses the `macos-26` runner and selects Xcode 26, which includes the iOS 26 SDK, while the deployment target stays iOS 17.
+Requirements: Xcode 15 or later to build locally, and a deployment target of iOS 17. To build from source, clone [dberrebi/OhrHachaim](https://github.com/dberrebi/OhrHachaim) and open `OhrHaChaim/OhrHaChaim.xcodeproj`. Apple has required Xcode 26 for App Store uploads since 28 April 2026. GitHub Actions uses the `macos-26` runner and selects Xcode 26, which includes the iOS 26 SDK, while the deployment target stays iOS 17. Simulator builds keep signing off. `.github/workflows/testflight.yml` uploads to TestFlight only after the secrets below are set.
 
 No Apple Developer account is configured. Signing is turned off in the target so the project can compile without a team:
 
@@ -46,9 +46,37 @@ Two artifacts are uploaded:
 - `simulator-screenshots` — home and a book's parasha list, in light and dark appearance, on both devices, so the light status icons on the dark bar and the full-width dividers can be checked under the iOS 26 SDK.
 - `app-store-screenshots` — Hebrew UI at the 6.9-inch and 13-inch sizes: home, the weekly reading, a parasha list, the reader, search, and settings. Alpha is removed so the files match the App Store's opaque PNG rule.
 
-A pull request from this repository is covered by the branch push, so the workflow does not start a second macOS run for it.
+A pull request from this repository is covered by the branch push, so the workflow does not start a second macOS run for it. Before the iPad tests, the workflow boots that simulator and waits with `xcrun simctl bootstatus <udid> -b`.
 
 The in-app language changes the interface strings, the layout direction, and date formatting immediately. The name on the device Home Screen, some system sheets, and the VoiceOver language stay on the device language.
+
+## Install with TestFlight
+
+This path uses the paid Apple Developer Program. The workflow `.github/workflows/testflight.yml` runs on every push to `main`, and it can also be started by hand from the Actions tab (workflow_dispatch). It uses a `macos-26` runner and Xcode 26. Until the four secrets exist, the workflow prints which names are missing and finishes green. It does not archive.
+
+Add the secrets under the repository’s Settings → Secrets and variables → Actions → Repository secrets. Do not commit them.
+
+| Secret | What to paste |
+| --- | --- |
+| `APPLE_TEAM_ID` | The 10-character Team ID from the Apple Developer membership page. |
+| `ASC_KEY_ID` | The Key ID of an App Store Connect API key. |
+| `ASC_ISSUER_ID` | The Issuer ID shown above the keys on that same page. |
+| `ASC_KEY_P8` | The raw text of the downloaded `.p8` file, including the `BEGIN PRIVATE KEY` and `END PRIVATE KEY` lines. |
+
+Create the API key in App Store Connect → Users and Access → Integrations → App Store Connect API. The key needs a role that can upload builds, such as Admin or App Manager. Apple lets you download the `.p8` once. The workflow writes it to a temporary file, passes that path to `xcodebuild -authenticationKeyPath`, and deletes the file when the step ends. The team id is passed as `DEVELOPMENT_TEAM` only for that build. The project file does not store it. The build number is `github.run_number` for this workflow, so the first successful upload is build 1, then 2, and so on. The marketing version stays 1.0.
+
+The bundle id is `app.ohrhachaim.OhrHaChaim`. App Store Connect needs an app record with that id before an upload can be processed. The workflow does not create the record.
+
+Signing uses `xcodebuild -allowProvisioningUpdates` with automatic signing. The archive is exported with method `app-store-connect` and `destination` `upload`, which sends the build to TestFlight.
+
+After App Store Connect finishes processing the build:
+
+1. Install Apple’s TestFlight app from the App Store on the iPhone or iPad.
+2. In App Store Connect, add yourself as an internal tester for the app (internal testing is available to App Store Connect users on the team).
+3. Open the TestFlight invite on that device and accept it.
+4. In the TestFlight app, install Ohr HaChaim. A new build replaces the previous one from that screen.
+
+External testers go through a short beta review. That step is separate from this workflow.
 
 ## Screens
 
@@ -105,7 +133,7 @@ The weekly table comes from Hebcal's calendar API (`s=on` for the Shabbat parash
 
 ## Privacy and support pages
 
-`docs/index.html` is a short support page in Hebrew and English. `docs/privacy/index.html` is the privacy policy, also in both languages: the app collects no data, has no analytics, and makes no network request of its own. History, favourites, and settings stay on the device. The in-app links in About and Settings point at:
+`docs/index.html` is the support page for people using the app, in Hebrew and English. It describes the offline Hebrew commentary, points to the GitHub issue tracker for help, links to the privacy policy, and includes the optional PayPal donation. Building from source is documented in this README, not on that page. `docs/privacy/index.html` is the privacy policy, also in both languages: the app collects no data, has no analytics, and makes no network request of its own. History, favourites, and settings stay on the device. The in-app links in About and Settings point at:
 
 - https://dberrebi.github.io/OhrHachaim/
 - https://dberrebi.github.io/OhrHachaim/privacy/
@@ -116,4 +144,4 @@ An optional donation link lives only on that website support page. The iOS app, 
 
 ## Not included
 
-There is no App Store setup, no signing identity, and no in-app payment. Readings outside 2024–2038 need a new run of the data script.
+No signing team is stored in the project. TestFlight signing happens only in GitHub Actions, and only after the four secrets above are set. There is no in-app payment. Readings outside 2024–2038 need a new run of the data script.
