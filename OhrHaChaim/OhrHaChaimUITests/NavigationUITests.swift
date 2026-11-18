@@ -38,10 +38,18 @@ final class WalkthroughUITests: XCTestCase {
         try FileManager.default.createDirectory(at: outputDir, withIntermediateDirectories: true)
         continueAfterFailure = true
         app = XCUIApplication()
-        // Pre-fills the search screen; the simulator keyboard cannot type Hebrew.
-        app.launchArguments = ["-search-query", "אורה"]
+        app.launchArguments = [
+            // Pre-fills the search screen; the simulator keyboard cannot type Hebrew.
+            "-search-query", "אורה",
+            // Lengthens the app's 20-second rule for an unscrolled screen, so the
+            // brief looks in the Resume check stay brief on a slow simulator.
+            "-reading-opening-delay", String(Int(Self.openingDelay)),
+        ]
         app.launch()
     }
+
+    /// How long the app waits before an unscrolled screen counts as read, in this test.
+    private static let openingDelay: TimeInterval = 120
 
     func testWalkthrough() throws {
         // Hosted CI Macs can be slow: launching has taken over 40 seconds.
@@ -92,13 +100,13 @@ final class WalkthroughUITests: XCTestCase {
         // A short look at the introduction and at This week is not a read:
         // Resume must still point to Bereshit. Its subtitle reads
         // "בראשית · פרק … · פסוק …"; the book row is plain "בראשית".
-        // The app counts an unscrolled screen as read after 20 seconds, so the
-        // check only holds when both looks really were short. Each measured look
-        // includes the tap and the second after Back, so it is longer than the
-        // time on screen; 18 seconds measured stays under the app's 20. On a very
-        // slow simulator the looks may be longer, and then the check is reported,
-        // not failed.
-        if introGlance < 18 && weeklyGlance < 18 {
+        // The test launches the app with a 120-second rule for an unscrolled screen
+        // (20 seconds in normal use), so the check applies even on a slow simulator.
+        // Each measured look includes the tap and the second after Back, so it is
+        // longer than the time on screen. Only a look that comes near the rule
+        // skips the check, and then it is reported, not failed.
+        let limit = Self.openingDelay - 10
+        if introGlance < limit && weeklyGlance < limit {
             let savedPlace = app.descendants(matching: .any)
                 .matching(NSPredicate(format: "label CONTAINS %@", "בראשית ·"))
                 .firstMatch
