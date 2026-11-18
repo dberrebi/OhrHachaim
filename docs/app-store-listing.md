@@ -82,11 +82,19 @@ The app includes third-party content under these licences: Sefaria Vocalized Edi
 
 ## Copyright
 
-TBD: year + legal name (Freedom to confirm).
+2026 Ohr HaChaim App
+
+This names the app's owner as a project name. It does not claim the commentary, which is public domain (the vocalized edition is CC0).
+
+## Age rating
+
+4+. Answer “None” to every content question.
 
 ## Availability
 
 Exclude China mainland. Religious content distributed there needs an NRAA permit, and this app does not have one.
+
+All other countries, including the European Union. Under the EU Digital Services Act, David declares in App Store Connect that he is not a trader: the app is free, with no in-app purchases and no ads. Update that declaration if the app adds in-app purchases, an in-app tip jar, or ads.
 
 ## Privacy
 
@@ -100,10 +108,11 @@ The app is free. Donations stay on the website support page only. This listing, 
 
 ## URLs
 
-These addresses match the pages in `docs/`. They answer only after GitHub Pages is turned on for this repository.
+These addresses match the pages in `docs/`, which GitHub Pages publishes from `main`.
 
 - Support URL: https://dberrebi.github.io/OhrHachaim/
 - Privacy Policy URL: https://dberrebi.github.io/OhrHachaim/privacy/
+- Support email: ohrhachaimapp@gmail.com. It is on both pages. Use it as the contact email in App Review Information too; the phone number there is seen only by Apple.
 
 ## Screenshots
 
