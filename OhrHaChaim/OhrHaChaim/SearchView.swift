@@ -94,6 +94,7 @@ struct SearchView: View {
                 .lineLimit(3)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .environment(\.layoutDirection, .rightToLeft)
+                .hebrewSpeech()
         }
         .accessibilityElement(children: .combine)
     }

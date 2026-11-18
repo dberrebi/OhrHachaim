@@ -154,3 +154,13 @@ enum HebrewText {
         }
     }
 }
+
+extension View {
+    /// Marks Hebrew content so VoiceOver reads it with a Hebrew voice, also when the
+    /// interface is in English. SwiftUI takes a text's speech language from the locale
+    /// in its environment and has no per-view accessibility language, so apply this to
+    /// the Hebrew text alone, not to a row that also holds interface labels.
+    func hebrewSpeech() -> some View {
+        environment(\.locale, Locale(identifier: "he"))
+    }
+}

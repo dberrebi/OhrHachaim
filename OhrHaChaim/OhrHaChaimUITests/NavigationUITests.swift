@@ -54,13 +54,60 @@ final class WalkthroughUITests: XCTestCase {
             // brief looks in the Resume check stay brief on a slow simulator.
             "-reading-opening-delay", String(Int(Self.openingDelay)),
         ]
-        app.launch()
+    }
+
+    /// Close the app before the next test launches it (see StoreScreenshotUITests).
+    override func tearDownWithError() throws {
+        if let app, app.state != .notRunning {
+            app.terminate()
+            _ = app.wait(for: .notRunning, timeout: 30)
+        }
     }
 
     /// How long the app waits before an unscrolled screen counts as read, in this test.
     private static let openingDelay: TimeInterval = 120
 
+    /// The main screens at the largest accessibility text size, for checking that
+    /// nothing is cut off or overlaps. It saves screenshots ("xl-…") and checks only
+    /// that each screen opens. Runs after testWalkthrough (alphabetical order).
+    func testWalkthroughLargestText() throws {
+        app.launchArguments += [
+            "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL",
+        ]
+        app.launch()
+        XCTAssertTrue(element("home.resume").waitForExistence(timeout: 90))
+        pause(5)
+        shot("xl-home")
+        app.swipeUp()
+        pause(1)
+        shot("xl-home-scrolled")
+
+        goHome()
+        tap("home.book.1")
+        wait(for: "parasha.2")
+        shot("xl-genesis-parshiyot")
+        tap("parasha.1")
+        let star = app.buttons["שמירה במועדפים"].firstMatch
+        XCTAssertTrue(star.waitForExistence(timeout: Self.patience * 2), "Bereshit did not open")
+        pause(2)
+        shot("xl-bereshit")
+
+        goHome()
+        tap("home.search")
+        pause(2)
+        shot("xl-search")
+
+        goHome()
+        tap("home.settings")
+        pause(1)
+        shot("xl-settings")
+        app.swipeUp()
+        pause(1)
+        shot("xl-settings-scrolled")
+    }
+
     func testWalkthrough() throws {
+        app.launch()
         // Hosted CI Macs can be slow: launching has taken over 40 seconds.
         XCTAssertTrue(element("home.resume").waitForExistence(timeout: 90))
         // A freshly booted simulator can still be too busy to accept a tap: the first
