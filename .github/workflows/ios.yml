@@ -106,9 +106,13 @@ jobs:
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY=""
 
+      # One simulator at a time. With three booted, the runner ran short of memory:
+      # the iPad took over 11 minutes to boot and xcodebuild then saw no simulators.
+      # Screenshots are written to the runner's disk, so shutting down keeps them.
       - name: Boot the iPhone 17 Pro simulator
         run: |
           set -euo pipefail
+          xcrun simctl shutdown "${{ steps.sim.outputs.iphone }}" || true
           xcrun simctl boot "${{ steps.sim.outputs.iphone_pro }}" || true
           xcrun simctl bootstatus "${{ steps.sim.outputs.iphone_pro }}" -b
 
@@ -129,6 +133,8 @@ jobs:
       - name: Boot the iPad simulator
         run: |
           set -euo pipefail
+          xcrun simctl shutdown "${{ steps.sim.outputs.iphone }}" || true
+          xcrun simctl shutdown "${{ steps.sim.outputs.iphone_pro }}" || true
           xcrun simctl boot "${{ steps.sim.outputs.ipad }}" || true
           xcrun simctl bootstatus "${{ steps.sim.outputs.ipad }}" -b
 
