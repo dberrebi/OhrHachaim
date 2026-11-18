@@ -20,6 +20,15 @@ final class NavigationUITests: XCTestCase {
 
         try screenshot.pngRepresentation.write(to: URL(fileURLWithPath: "/tmp/parasha-list.png"))
     }
+
+    /// Close the app before the next UI test launches it (see StoreScreenshotUITests).
+    override func tearDownWithError() throws {
+        let app = XCUIApplication()
+        if app.state != .notRunning {
+            app.terminate()
+            _ = app.wait(for: .notRunning, timeout: 30)
+        }
+    }
 }
 
 /// A guided tour of the app for the Walkthrough workflow. It opens each screen,
@@ -54,7 +63,9 @@ final class WalkthroughUITests: XCTestCase {
     func testWalkthrough() throws {
         // Hosted CI Macs can be slow: launching has taken over 40 seconds.
         XCTAssertTrue(element("home.resume").waitForExistence(timeout: 90))
-        pause(1)
+        // A freshly booted simulator can still be too busy to accept a tap: the first
+        // tap once failed with "Timed out while synthesizing event".
+        pause(5)
         shot("home")
 
         // Genesis, then Bereshit: read a little and save a passage.

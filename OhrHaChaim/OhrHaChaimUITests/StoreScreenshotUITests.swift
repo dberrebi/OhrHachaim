@@ -9,6 +9,17 @@ final class StoreScreenshotUITests: XCTestCase {
         continueAfterFailure = false
     }
 
+    /// Close the app at the end of each test, while the automation session still
+    /// tracks it, and wait until it has stopped. Otherwise the next test's launch has
+    /// to close it, and on slow hosted Macs that has failed with
+    /// "Failed to terminate app.ohrhachaim.OhrHaChaim".
+    override func tearDownWithError() throws {
+        if app.state != .notRunning {
+            app.terminate()
+            _ = app.wait(for: .notRunning, timeout: 30)
+        }
+    }
+
     func testHebrewLightScreens() throws {
         launch(appearance: "light")
         try shot("light-home")
