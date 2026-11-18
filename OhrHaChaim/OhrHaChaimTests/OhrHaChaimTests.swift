@@ -91,6 +91,39 @@ final class OhrHaChaimTests: XCTestCase {
     }
 
     @MainActor
+    func testReadingAParashaAgainMovesItToTheTop() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let store = CommentaryStore()
+        let library = UserLibrary(storageURL: directory.appendingPathComponent("library.json"))
+        let first = try XCTUnwrap(store.comments(parashaID: 1).first)
+        let other = try XCTUnwrap(store.comments(parashaID: 2).first)
+        library.note(first)
+        library.note(other)
+        XCTAssertEqual(library.history.map(\.parashaID), [2, 1])
+        // Back to Bereshit at the same passage as before.
+        library.note(first)
+        XCTAssertEqual(library.history.map(\.parashaID), [1, 2])
+        XCTAssertEqual(library.lastCommentID, first.id)
+    }
+
+    @MainActor
+    func testFlushHasWrittenTheFileWhenItReturns() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let url = directory.appendingPathComponent("library.json")
+        let store = CommentaryStore()
+        let comment = try XCTUnwrap(store.comments(parashaID: 1).first)
+        let library = UserLibrary(storageURL: url)
+        library.toggleFavourite(comment.id)
+        library.note(comment)
+        library.flush()
+        let reopened = UserLibrary(storageURL: url)
+        XCTAssertEqual(reopened.favouriteIDs, [comment.id])
+        XCTAssertEqual(reopened.history.first?.commentID, comment.id)
+    }
+
+    @MainActor
     func testUnreadableLibraryIsBackedUp() throws {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)

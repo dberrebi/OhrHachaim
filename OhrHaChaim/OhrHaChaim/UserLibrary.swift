@@ -1,4 +1,5 @@
 import Foundation
+import os
 import SwiftUI
 
 @MainActor
@@ -129,16 +130,20 @@ final class UserLibrary {
         } else {
             favouriteIDs.insert(id, at: 0)
         }
-        flush()
+        saveNow()
     }
 
-    /// Records reading progress for the parasha. Scrolling inside one parasha updates that row.
+    /// Records reading progress for the parasha. Scrolling inside one parasha updates that row,
+    /// and reading a parasha again moves its row to the top, even at the same place.
     func note(_ comment: Comment) {
+        let alreadyLast = lastCommentID == comment.id
         lastCommentID = comment.id
         if let index = history.firstIndex(where: { $0.parashaID == comment.parashaID }) {
-            guard history[index].commentID != comment.id
-                    || history[index].chapter != comment.chapter
-                    || history[index].verse != comment.verse else { return }
+            let samePlace = history[index].commentID == comment.id
+                && history[index].chapter == comment.chapter
+                && history[index].verse == comment.verse
+            // Already the latest row at this place: nothing to change or save.
+            if samePlace, index == 0, alreadyLast { return }
             history[index].commentID = comment.id
             history[index].chapter = comment.chapter
             history[index].verse = comment.verse
@@ -214,13 +219,25 @@ final class UserLibrary {
         }
     }
 
+    /// Saves at once, off the main thread. Used after a deliberate change such as a star.
+    private func saveNow() {
+        saveTask?.cancel()
+        saveTask = nil
+        write(Snapshot(lastCommentID: lastCommentID, history: history, favouriteIDs: favouriteIDs), wait: false)
+    }
+
+    /// Saves at once and returns only when the file is written. Called when the app leaves
+    /// the screen, because iOS can suspend or end it right after. The file is a few kilobytes.
     func flush() {
         saveTask?.cancel()
         saveTask = nil
-        write(Snapshot(lastCommentID: lastCommentID, history: history, favouriteIDs: favouriteIDs))
+        write(Snapshot(lastCommentID: lastCommentID, history: history, favouriteIDs: favouriteIDs), wait: true)
     }
 
-    private func write(_ snapshot: Snapshot) {
+    nonisolated private static let log = Logger(subsystem: "app.ohrhachaim.OhrHaChaim", category: "library")
+
+    /// Writes go through one serial queue, so a waiting write also waits for any earlier one.
+    private func write(_ snapshot: Snapshot, wait: Bool = false) {
         let data: Data
         do {
             try FileManager.default.createDirectory(
@@ -229,11 +246,21 @@ final class UserLibrary {
             )
             data = try encoder.encode(snapshot)
         } catch {
+            Self.log.error("Could not prepare the library file: \(error.localizedDescription, privacy: .public)")
             return
         }
         let url = fileURL
-        writeQueue.async {
-            try? data.write(to: url, options: .atomic)
+        let save: @Sendable () -> Void = {
+            do {
+                try data.write(to: url, options: .atomic)
+            } catch {
+                UserLibrary.log.error("Could not save the library file: \(error.localizedDescription, privacy: .public)")
+            }
+        }
+        if wait {
+            writeQueue.sync(execute: save)
+        } else {
+            writeQueue.async(execute: save)
         }
     }
 }

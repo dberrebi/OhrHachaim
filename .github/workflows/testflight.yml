@@ -1,18 +1,29 @@
 name: TestFlight
 
+# Uploads a main commit only after the iOS workflow (the data check, the build and every
+# unit and UI test) has passed on it. A manual run from the Actions tab uploads the commit
+# it is started on, without waiting for tests.
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: [iOS]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
 
-# Do not cancel an upload that has already started. A newer push waits.
+# Do not cancel an upload that has already started. A newer run waits.
 concurrency:
-  group: testflight-${{ github.ref }}
+  group: testflight
   cancel-in-progress: false
 
 jobs:
   prepare:
+    # A pull request from a fork whose branch is also called main also matches the branch
+    # filter above, so check that this was a passing run of a push to this repository.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_repository.full_name == github.repository)
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
@@ -49,6 +60,9 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The commit the iOS workflow tested, not whatever main is now.
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - name: Select Xcode 26
         run: |

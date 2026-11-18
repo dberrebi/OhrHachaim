@@ -198,6 +198,9 @@ struct ReadingView: View {
                     .font(.body)
                     .foregroundStyle(Theme.accent)
                     .frame(width: 32, height: 32)
+                    // Apple's minimum touch target is 44 by 44 points. Widen the tappable
+                    // area without moving the star or the text beside it.
+                    .contentShape(Rectangle().inset(by: -6))
             }
             .buttonStyle(.plain)
             .accessibilityLabel(
