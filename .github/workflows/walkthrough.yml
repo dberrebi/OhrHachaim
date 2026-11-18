@@ -18,7 +18,7 @@ jobs:
   walkthrough:
     # Same image and Xcode as ios.yml.
     runs-on: macos-26
-    timeout-minutes: 45
+    timeout-minutes: 55
     steps:
       - uses: actions/checkout@v4
 
@@ -83,8 +83,9 @@ jobs:
           xcrun simctl bootstatus "$UDID" -b
           xcrun simctl status_bar "$UDID" override --time 9:41 --batteryState charged --batteryLevel 100 || true
 
+      # Two tests: the walkthrough, then the main screens at the largest text size.
       - name: Walk through the app and record it
-        timeout-minutes: 15
+        timeout-minutes: 25
         run: |
           UDID="${{ steps.sim.outputs.iphone }}"
           mkdir -p artifacts/screens

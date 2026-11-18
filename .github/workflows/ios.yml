@@ -3,6 +3,8 @@ name: iOS
 on:
   push:
   pull_request:
+  # Run from the Actions tab on any branch to get the App Store screenshots there.
+  workflow_dispatch:
 
 # A same-repo pull request is already built by its push. Fork pull requests
 # still run here. Cancel a superseded push so a fix does not pay for two
@@ -22,7 +24,11 @@ jobs:
     runs-on: macos-26
     # Three simulators boot in turn for the store screenshots, and a fresh boot
     # takes about 10 minutes on a hosted runner, so a full run is close to an hour.
+    # Pull requests and other branches stop after the iPhone 17 Pro Max tests
+    # (about 20 minutes); main and manual runs also take the App Store screenshots.
     timeout-minutes: 75
+    env:
+      STORE_SCREENSHOTS: ${{ github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -112,6 +118,7 @@ jobs:
       # the iPad took over 11 minutes to boot and xcodebuild then saw no simulators.
       # Screenshots are written to the runner's disk, so shutting down keeps them.
       - name: Boot the iPhone 17 Pro simulator
+        if: env.STORE_SCREENSHOTS == 'true'
         run: |
           set -euo pipefail
           xcrun simctl shutdown "${{ steps.sim.outputs.iphone }}" || true
@@ -119,6 +126,7 @@ jobs:
           xcrun simctl bootstatus "${{ steps.sim.outputs.iphone_pro }}" -b
 
       - name: Capture iPhone 17 Pro screenshots
+        if: env.STORE_SCREENSHOTS == 'true'
         run: |
           set -o pipefail
           XCTESTRUN=$(find "${RUNNER_TEMP}/DerivedData" -name '*.xctestrun' -print -quit)
@@ -133,6 +141,7 @@ jobs:
             CODE_SIGN_IDENTITY=""
 
       - name: Boot the iPad simulator
+        if: env.STORE_SCREENSHOTS == 'true'
         run: |
           set -euo pipefail
           xcrun simctl shutdown "${{ steps.sim.outputs.iphone }}" || true
@@ -141,6 +150,7 @@ jobs:
           xcrun simctl bootstatus "${{ steps.sim.outputs.ipad }}" -b
 
       - name: Capture iPad 13-inch screenshots
+        if: env.STORE_SCREENSHOTS == 'true'
         run: |
           set -o pipefail
           XCTESTRUN=$(find "${RUNNER_TEMP}/DerivedData" -name '*.xctestrun' -print -quit)
@@ -155,6 +165,7 @@ jobs:
             CODE_SIGN_IDENTITY=""
 
       - name: Check screenshot sizes
+        if: env.STORE_SCREENSHOTS == 'true'
         run: |
           set -euo pipefail
           python3 scripts/prepare_screenshots.py /tmp/shots
@@ -170,14 +181,14 @@ jobs:
           find artifacts -type f -name '*.png' | sort
 
       - uses: actions/upload-artifact@v4
-        if: success()
+        if: success() && env.STORE_SCREENSHOTS == 'true'
         with:
           name: simulator-screenshots
           path: artifacts/appearance/*.png
           if-no-files-found: error
 
       - uses: actions/upload-artifact@v4
-        if: success()
+        if: success() && env.STORE_SCREENSHOTS == 'true'
         with:
           name: app-store-screenshots
           path: artifacts/app-store/*.png

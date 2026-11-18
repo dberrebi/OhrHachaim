@@ -216,6 +216,7 @@ struct ReadingView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .environment(\.layoutDirection, .rightToLeft)
             .accessibilityLabel(spoken)
+            .hebrewSpeech()
         }
         .environment(\.layoutDirection, .rightToLeft)
         .padding(.vertical, 12)

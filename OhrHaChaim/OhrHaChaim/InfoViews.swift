@@ -44,6 +44,7 @@ struct SettingsView: View {
                     .multilineTextAlignment(.leading)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .environment(\.layoutDirection, .rightToLeft)
+                    .hebrewSpeech()
                 }
                 .padding(.vertical, 4)
             } header: {

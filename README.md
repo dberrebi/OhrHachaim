@@ -41,7 +41,7 @@ This is the official free way to put the app on a phone you control. A Personal 
 
 GitHub Actions (`.github/workflows/ios.yml`) runs on a GitHub-hosted `macos-26` runner. That image's default toolchain is Xcode 26, and the workflow also selects `/Applications/Xcode_26*.app` so the build does not follow a newer Xcode if one becomes the default. Code signing stays off. Tests run on an iPhone 17 Pro Max simulator (6.9-inch, 1320×2868), including a check that tapping בראשית opens its parasha list and a search test. The store screens are then captured on an iPhone 17 Pro simulator (1206×2622) and on an iPad Pro 13-inch simulator (2064×2752). Each of those two simulators is booted and waited on with `xcrun simctl bootstatus` before its screenshots.
 
-Two artifacts are uploaded:
+On `main`, and when the workflow is started by hand from the Actions tab, it also boots the iPhone 17 Pro and the 13-inch iPad and uploads two artifacts. Other branches and pull requests stop after the iPhone 17 Pro Max tests, which keeps a pull request's run to about 20 minutes:
 
 - `simulator-screenshots` — home and a book's parasha list, in light and dark appearance, on both devices, so the light status icons on the dark bar and the full-width dividers can be checked under the iOS 26 SDK.
 - `app-store-screenshots` — Hebrew UI at 1206×2622, 1320×2868, and 2064×2752: home, the weekly reading, a parasha list, the reader, search, and settings. Alpha is removed so the files match the App Store's opaque PNG rule.
