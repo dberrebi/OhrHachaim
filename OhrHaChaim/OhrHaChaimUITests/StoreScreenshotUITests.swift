@@ -71,27 +71,36 @@ final class StoreScreenshotUITests: XCTestCase {
 
     private func tap(_ identifier: String) {
         let element = app.descendants(matching: .any)[identifier]
-        for _ in 0..<6 {
-            if element.exists && element.isHittable {
-                element.tap()
-                return
+        if element.waitForExistence(timeout: 5), element.isHittable {
+            element.tap()
+            return
+        }
+        for swipeUp in [true, false] {
+            for _ in 0..<4 {
+                if element.exists, element.isHittable {
+                    element.tap()
+                    return
+                }
+                if swipeUp {
+                    app.swipeUp()
+                } else {
+                    app.swipeDown()
+                }
             }
-            app.swipeUp()
         }
         XCTFail("Missing \(identifier)")
     }
 
+    /// On the iPhone the home list is under the stack. Keep tapping Back until it is showing.
     private func pop() {
-        let buttons = app.navigationBars.buttons
-        XCTAssertTrue(buttons.firstMatch.waitForExistence(timeout: 5))
-        for index in 0..<buttons.count {
-            let button = buttons.element(boundBy: index)
-            let label = button.label
-            if label == "שיתוף" || label == "Share" { continue }
-            button.tap()
-            return
+        let home = app.descendants(matching: .any)["home.search"]
+        for _ in 0..<4 {
+            if home.exists, home.isHittable { return }
+            let back = app.navigationBars.buttons["BackButton"]
+            if !back.waitForExistence(timeout: 3) { break }
+            back.tap()
         }
-        XCTFail("No back button")
+        XCTAssertTrue(home.waitForExistence(timeout: 8), "Did not return to the home list")
     }
 
     private func waitForReader() {
