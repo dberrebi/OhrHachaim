@@ -73,8 +73,16 @@ struct ReadingView: View {
     /// once the reader has scrolled, so flicking through a parasha does not count.
     private static let settleDelay: UInt64 = 4_000_000_000
     /// Without any scrolling, the passage a screen opened on counts only after this
-    /// long, so opening This week or the introduction just to look does not count.
-    private static let openingDelay: UInt64 = 20_000_000_000
+    /// long (20 seconds), so opening This week or the introduction just to look does
+    /// not count. UI tests can lengthen it with `-reading-opening-delay <seconds>`, so
+    /// a brief look stays brief on a slow simulator.
+    private static let openingDelay: UInt64 = {
+        if let value = AppSettings.launchValue("-reading-opening-delay"),
+           let seconds = Double(value), seconds > 0 {
+            return UInt64(seconds * 1_000_000_000)
+        }
+        return 20_000_000_000
+    }()
 
     var body: some View {
         ScrollViewReader { proxy in
