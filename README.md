@@ -41,6 +41,8 @@ This is the official free way to put the app on a phone you control. A Personal 
 
 GitHub Actions (`.github/workflows/ios.yml`) runs on a GitHub-hosted `macos-26` runner. That image's default toolchain is Xcode 26, and the workflow also selects `/Applications/Xcode_26*.app` so the build does not follow a newer Xcode if one becomes the default. Code signing stays off. Tests run on an iPhone 17 Pro Max simulator (6.9-inch, 1320×2868), including a check that tapping בראשית opens its parasha list and a search test. The store screens are then captured on an iPhone 17 Pro simulator (1206×2622) and on an iPad Pro 13-inch simulator (2064×2752). Each of those two simulators is booted and waited on with `xcrun simctl bootstatus` before its screenshots.
 
+Before the Mac starts, a short Linux job runs `scripts/build_data.py --validate-only` on the bundled database (licences, Hebrew-only text, known gaps, calendar coverage, search index) and checks that the file matches the checksum in `data/manifest.json`. The Mac build waits for it.
+
 On `main`, and when the workflow is started by hand from the Actions tab, it also boots the iPhone 17 Pro and the 13-inch iPad and uploads two artifacts. Other branches and pull requests stop after the iPhone 17 Pro Max tests, which keeps a pull request's run to about 20 minutes:
 
 - `simulator-screenshots` — home and a book's parasha list, in light and dark appearance, on both devices, so the light status icons on the dark bar and the full-width dividers can be checked under the iOS 26 SDK.
@@ -48,11 +50,11 @@ On `main`, and when the workflow is started by hand from the Actions tab, it als
 
 A pull request from this repository is covered by the branch push, so the workflow does not start a second macOS run for it. Before the iPad tests, the workflow boots that simulator and waits with `xcrun simctl bootstatus <udid> -b`.
 
-The in-app language changes the interface strings, the layout direction, and date formatting immediately. The name on the device Home Screen, some system sheets, and the VoiceOver language stay on the device language.
+The in-app language changes the interface strings, the layout direction, and date formatting immediately. The name on the device Home Screen and some system sheets stay on the device language. The commentary, search snippets, and the passages in History and Favourites are marked as Hebrew for VoiceOver in either interface language.
 
 ## Install with TestFlight
 
-This path uses the paid Apple Developer Program. The workflow `.github/workflows/testflight.yml` runs on every push to `main`, and it can also be started by hand from the Actions tab (workflow_dispatch). It uses a `macos-26` runner and Xcode 26. Until the four secrets exist, the workflow prints which names are missing and finishes green. It does not archive.
+This path uses the paid Apple Developer Program. The workflow `.github/workflows/testflight.yml` runs when the iOS workflow passes on a push to `main` (the data check, the build, and every unit and UI test), and it uploads the commit that was tested. A failed or cancelled iOS run uploads nothing; re-run it, or start TestFlight by hand from the Actions tab (workflow_dispatch), which uploads the commit it is started on without waiting for tests. It uses a `macos-26` runner and Xcode 26. Until the four secrets exist, the workflow prints which names are missing and finishes green. It does not archive.
 
 Add the secrets under the repository’s Settings → Secrets and variables → Actions → Repository secrets. Do not commit them.
 

@@ -14,7 +14,39 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # The bundled text must pass the same checks scripts/build_data.py runs when it builds it:
+  # licences, Hebrew-only text, known gaps, calendar coverage, the search index. The file must
+  # also match the checksum in data/manifest.json. A few seconds on Linux, before the Mac.
+  data:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate the bundled database
+        run: python3 -I scripts/build_data.py --validate-only
+
+      - name: Match the manifest checksum
+        run: |
+          set -euo pipefail
+          python3 -I - <<'PY'
+          import hashlib, json, pathlib, sys
+          manifest = json.loads(pathlib.Path("data/manifest.json").read_text(encoding="utf-8"))
+          database = pathlib.Path(manifest["database"])
+          data = database.read_bytes()
+          digest = hashlib.sha256(data).hexdigest()
+          if digest != manifest["sha256"] or len(data) != manifest["bytes"]:
+              sys.exit(f"{database} does not match data/manifest.json: sha256 {digest}, {len(data)} bytes")
+          print(f"{database} matches data/manifest.json ({len(data)} bytes)")
+          PY
+
   build:
+    needs: data
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
     # macos-26 is the GitHub-hosted image whose default toolchain is Xcode 26
     # (26.6 as of the 20260824 image) with the iOS 26 SDK. See

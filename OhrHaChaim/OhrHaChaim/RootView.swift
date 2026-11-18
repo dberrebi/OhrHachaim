@@ -114,7 +114,8 @@ struct WelcomeView: View {
         .padding(32)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Theme.background(scheme))
-        .studyBar(title: L10n.text("app.title", settings.language))
+        // The sidebar's bar and this screen already show the app's name, so this bar stays empty.
+        .studyBar(title: "")
         .accessibilityElement(children: .combine)
     }
 }
@@ -140,6 +141,7 @@ struct CenteredMenuRow: View {
     var subtitle: String?
     @Environment(AppSettings.self) private var settings
     @Environment(\.colorScheme) private var scheme
+    @Environment(\.locale) private var locale
 
     var body: some View {
         VStack(spacing: 4) {
@@ -155,6 +157,9 @@ struct CenteredMenuRow: View {
                     .multilineTextAlignment(.center)
                     .lineLimit(3)
                     .frame(maxWidth: .infinity)
+                    // A Hebrew passage under an English title (History, Favourites) is read
+                    // with a Hebrew voice. See hebrewSpeech().
+                    .environment(\.locale, HebrewText.containsHebrew(subtitle) ? Locale(identifier: "he") : locale)
             }
         }
         .padding(.vertical, 8)
