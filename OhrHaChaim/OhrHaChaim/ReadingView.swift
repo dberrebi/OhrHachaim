@@ -13,6 +13,28 @@ private struct ReadingAnchorKey: PreferenceKey {
     }
 }
 
+/// One lazy row. A comment is its own row, with the same `id` the reader already
+/// scrolls to, so resume and search can land on it without building the parasha first.
+private enum ReadingRow: Identifiable {
+    case header(parashaID: Int)
+    case gap(parashaID: Int, chapter: Int)
+    case heading(parashaID: Int, chapter: Int, verse: Int)
+    case comment(Comment)
+
+    var id: String {
+        switch self {
+        case .header(let parashaID):
+            return "h-\(parashaID)"
+        case .gap(let parashaID, let chapter):
+            return "g-\(parashaID)-\(chapter)"
+        case .heading(let parashaID, let chapter, let verse):
+            return "vh-\(parashaID)-\(chapter)-\(verse)"
+        case .comment(let comment):
+            return "c-\(comment.id)"
+        }
+    }
+}
+
 private enum ReadingBlock: Identifiable {
     case header(parashaID: Int)
     case gap(parashaID: Int, chapter: Int)
@@ -39,7 +61,7 @@ struct ReadingView: View {
     @Environment(CommentaryStore.self) private var store
     @Environment(UserLibrary.self) private var library
     @Environment(\.colorScheme) private var scheme
-    @State private var blocks: [ReadingBlock] = []
+    @State private var rows: [ReadingRow] = []
     @State private var allowTracking = false
     @State private var trackedCommentID: Int?
     @State private var initialTopID: Int?
@@ -57,8 +79,8 @@ struct ReadingView: View {
     var body: some View {
         ScrollViewReader { proxy in
             ScrollView {
-                VStack(alignment: .trailing, spacing: 0) {
-                    blocksView
+                LazyVStack(alignment: .trailing, spacing: 0) {
+                    rowsView
                     footer
                 }
                 .frame(maxWidth: 740)
@@ -73,8 +95,8 @@ struct ReadingView: View {
                 noteVisibleComment(anchors)
             }
             .onAppear {
-                if blocks.isEmpty {
-                    blocks = makeBlocks()
+                if rows.isEmpty {
+                    rows = makeRows()
                 }
                 restore(using: proxy)
             }
@@ -105,16 +127,16 @@ struct ReadingView: View {
     }
 
     @ViewBuilder
-    private var blocksView: some View {
-        if blocks.isEmpty {
+    private var rowsView: some View {
+        if rows.isEmpty {
             Text(L10n.text("reading.empty", settings.language))
                 .font(Theme.menuFont(settings.language))
                 .foregroundStyle(Theme.secondary(scheme))
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 40)
         } else {
-            ForEach(blocks) { block in
-                switch block {
+            ForEach(rows) { row in
+                switch row {
                 case .header(let parashaID):
                     if let parasha = store.parasha(id: parashaID) {
                         Text(parasha.name(for: settings.language))
@@ -127,12 +149,10 @@ struct ReadingView: View {
                     }
                 case .gap(_, let chapter):
                     gapRow(chapter: chapter)
-                case .verse(_, let chapter, let verse, let comments):
-                    verseSection(chapter: chapter, verse: verse, comments: comments)
-                case .prose(let comments):
-                    ForEach(comments) { comment in
-                        commentRow(comment)
-                    }
+                case .heading(_, let chapter, let verse):
+                    verseHeadingRow(chapter: chapter, verse: verse)
+                case .comment(let comment):
+                    commentRow(comment)
                 }
             }
         }
@@ -149,20 +169,15 @@ struct ReadingView: View {
             .overlay(alignment: .bottom) { divider }
     }
 
-    private func verseSection(chapter: Int, verse: Int, comments: [Comment]) -> some View {
-        VStack(alignment: .trailing, spacing: 0) {
-            Text(verseHeading(chapter: chapter, verse: verse))
-                .font(settings.language == .he ? .custom(Theme.hebrewFamily, size: 16, relativeTo: .subheadline).weight(.semibold) : .subheadline.weight(.semibold))
-                .foregroundStyle(Theme.emphasis(scheme))
-                .frame(maxWidth: .infinity, alignment: .center)
-                .multilineTextAlignment(.center)
-                .padding(.top, 18)
-                .padding(.bottom, 8)
-                .accessibilityAddTraits(.isHeader)
-            ForEach(comments) { comment in
-                commentRow(comment)
-            }
-        }
+    private func verseHeadingRow(chapter: Int, verse: Int) -> some View {
+        Text(verseHeading(chapter: chapter, verse: verse))
+            .font(settings.language == .he ? .custom(Theme.hebrewFamily, size: 16, relativeTo: .subheadline).weight(.semibold) : .subheadline.weight(.semibold))
+            .foregroundStyle(Theme.emphasis(scheme))
+            .frame(maxWidth: .infinity, alignment: .center)
+            .multilineTextAlignment(.center)
+            .padding(.top, 18)
+            .padding(.bottom, 8)
+            .accessibilityAddTraits(.isHeader)
     }
 
     private func commentRow(_ comment: Comment) -> some View {
@@ -282,12 +297,36 @@ struct ReadingView: View {
             allowTracking = true
             return
         }
+        // The lazy stack estimates row heights until it builds the target.
+        // Scroll once to reach it, then again before tracking starts, so the
+        // comment sits at the top and the opening dwell stays 20 seconds.
         DispatchQueue.main.async {
             proxy.scrollTo(target, anchor: .top)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                proxy.scrollTo(target, anchor: .top)
+            }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 allowTracking = true
             }
         }
+    }
+
+    private func makeRows() -> [ReadingRow] {
+        var rows: [ReadingRow] = []
+        for block in makeBlocks() {
+            switch block {
+            case .header(let parashaID):
+                rows.append(.header(parashaID: parashaID))
+            case .gap(let parashaID, let chapter):
+                rows.append(.gap(parashaID: parashaID, chapter: chapter))
+            case .verse(let parashaID, let chapter, let verse, let comments):
+                rows.append(.heading(parashaID: parashaID, chapter: chapter, verse: verse))
+                rows.append(contentsOf: comments.map { .comment($0) })
+            case .prose(let comments):
+                rows.append(contentsOf: comments.map { .comment($0) })
+            }
+        }
+        return rows
     }
 
     private func makeBlocks() -> [ReadingBlock] {
