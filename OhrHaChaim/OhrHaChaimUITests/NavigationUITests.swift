@@ -69,10 +69,14 @@ final class WalkthroughUITests: XCTestCase {
 
     /// The main screens at the largest accessibility text size, for checking that
     /// nothing is cut off or overlaps. It saves screenshots ("xl-…") and checks only
-    /// that each screen opens. Runs after testWalkthrough (alphabetical order).
+    /// that each screen opens. Runs after testWalkthrough (alphabetical order), which
+    /// leaves the app in English and dark mode, so start it in Hebrew and light mode
+    /// here. "-ui.language he" sets the stored language for this launch only.
     func testWalkthroughLargestText() throws {
         app.launchArguments += [
             "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL",
+            "-ui.language", "he",
+            "-appearance", "light",
         ]
         app.launch()
         XCTAssertTrue(element("home.resume").waitForExistence(timeout: 90))
@@ -87,7 +91,11 @@ final class WalkthroughUITests: XCTestCase {
         wait(for: "parasha.2")
         shot("xl-genesis-parshiyot")
         tap("parasha.1")
-        let star = app.buttons["שמירה במועדפים"].firstMatch
+        // testWalkthrough runs first on the same simulator and saves the first passage,
+        // so its star reads "remove". At this size the next passage is not built yet.
+        let star = app.buttons
+            .matching(NSPredicate(format: "label IN %@", ["שמירה במועדפים", "הסרה מהמועדפים"]))
+            .firstMatch
         XCTAssertTrue(star.waitForExistence(timeout: Self.patience * 2), "Bereshit did not open")
         pause(2)
         shot("xl-bereshit")
