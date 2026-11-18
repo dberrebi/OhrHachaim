@@ -53,9 +53,13 @@ final class StoreScreenshotUITests: XCTestCase {
         prefix == "ipad"
     }
 
-    /// Point width of an iPhone 17 Pro Max is 440. The 13-inch iPad is much wider.
+    /// Point widths: iPhone 17 Pro is 402, iPhone 17 Pro Max is 440, and the 13-inch iPad is much wider.
+    /// Separate prefixes keep the 1206×2622 and 1320×2868 captures from overwriting each other.
     private var prefix: String {
-        app.windows.firstMatch.frame.width >= 700 ? "ipad" : "iphone"
+        let width = app.windows.firstMatch.frame.width
+        if width >= 700 { return "ipad" }
+        if width >= 420 { return "iphone69" }
+        return "iphone"
     }
 
     private func launch(appearance: String) {

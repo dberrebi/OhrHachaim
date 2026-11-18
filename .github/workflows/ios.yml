@@ -65,15 +65,18 @@ jobs:
               return chosen
 
           iphone = pick(lambda name: name == "iPhone 17 Pro Max")
+          iphone_pro = pick(lambda name: name == "iPhone 17 Pro")
           ipad = pick(lambda name: name.startswith("iPad Pro 13-inch"))
-          if iphone is None or ipad is None:
+          if iphone is None or iphone_pro is None or ipad is None:
               print(json.dumps(devices, indent=2)[:4000], file=sys.stderr)
-              sys.exit("Need iPhone 17 Pro Max and iPad Pro 13-inch simulators")
-          print(f"iPhone {iphone[2]} {iphone[3]} {iphone[1]}", file=sys.stderr)
+              sys.exit("Need iPhone 17 Pro, iPhone 17 Pro Max, and iPad Pro 13-inch simulators")
+          print(f"iPhone 17 Pro Max {iphone[2]} {iphone[3]} {iphone[1]}", file=sys.stderr)
+          print(f"iPhone 17 Pro {iphone_pro[2]} {iphone_pro[3]} {iphone_pro[1]}", file=sys.stderr)
           print(f"iPad {ipad[2]} {ipad[3]} {ipad[1]}", file=sys.stderr)
           import os
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as handle:
               handle.write(f"iphone={iphone[1]}\n")
+              handle.write(f"iphone_pro={iphone_pro[1]}\n")
               handle.write(f"ipad={ipad[1]}\n")
           PY
 
@@ -98,6 +101,26 @@ jobs:
           xcodebuild test-without-building \
             -xctestrun "$XCTESTRUN" \
             -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.iphone }}" \
+            -derivedDataPath "${RUNNER_TEMP}/DerivedData" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=""
+
+      - name: Boot the iPhone 17 Pro simulator
+        run: |
+          set -euo pipefail
+          xcrun simctl boot "${{ steps.sim.outputs.iphone_pro }}" || true
+          xcrun simctl bootstatus "${{ steps.sim.outputs.iphone_pro }}" -b
+
+      - name: Capture iPhone 17 Pro screenshots
+        run: |
+          set -o pipefail
+          XCTESTRUN=$(find "${RUNNER_TEMP}/DerivedData" -name '*.xctestrun' -print -quit)
+          test -n "$XCTESTRUN"
+          xcodebuild test-without-building \
+            -xctestrun "$XCTESTRUN" \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.iphone_pro }}" \
+            -only-testing:OhrHaChaimUITests/StoreScreenshotUITests \
             -derivedDataPath "${RUNNER_TEMP}/DerivedData" \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
