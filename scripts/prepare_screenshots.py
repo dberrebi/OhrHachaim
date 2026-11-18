@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Flatten simulator PNGs to opaque RGB and check App Store pixel sizes.
 
-The App Store rejects a screenshot that still has an alpha channel. iPhone 6.9-inch
-captures must be 1320x2868. iPad 13-inch captures must be 2064x2752.
+The App Store rejects a screenshot that still has an alpha channel. The medium
+iPhone slot is 1206x2622, the 6.9-inch slot is 1320x2868, and the 13-inch iPad
+slot is 2064x2752.
 """
 
 from __future__ import annotations
@@ -14,7 +15,8 @@ from pathlib import Path
 
 
 EXPECTED = {
-    "iphone": (1320, 2868),
+    "iphone": (1206, 2622),
+    "iphone69": (1320, 2868),
     "ipad": (2064, 2752),
 }
 
@@ -129,7 +131,7 @@ def prepare(directory: Path) -> None:
         prefix = path.name.split("-", 1)[0]
         expected = EXPECTED.get(prefix)
         if expected is None:
-            raise SystemExit(f"{path.name} does not start with iphone- or ipad-")
+            raise SystemExit(f"{path.name} does not start with iphone-, iphone69-, or ipad-")
         width, height, rgb = read_png(path)
         if (width, height) != expected:
             raise SystemExit(f"{path.name} is {width}x{height}, expected {expected[0]}x{expected[1]}")

@@ -39,12 +39,12 @@ Apple’s account help describes the Personal Team that Xcode creates when you s
 
 This is the official free way to put the app on a phone you control. A Personal Team cannot publish to the App Store or send the build to other people. The first screen is a full-width list: resume, history, this week's parasha, the five books, settings, help, and about.
 
-GitHub Actions (`.github/workflows/ios.yml`) runs on a GitHub-hosted `macos-26` runner. That image's default toolchain is Xcode 26, and the workflow also selects `/Applications/Xcode_26*.app` so the build does not follow a newer Xcode if one becomes the default. Code signing stays off. Tests run on an iPhone 17 Pro Max simulator (6.9-inch, 1320×2868), including a check that tapping בראשית opens its parasha list and a search test. The same screens are then captured on an iPad Pro 13-inch simulator (2064×2752).
+GitHub Actions (`.github/workflows/ios.yml`) runs on a GitHub-hosted `macos-26` runner. That image's default toolchain is Xcode 26, and the workflow also selects `/Applications/Xcode_26*.app` so the build does not follow a newer Xcode if one becomes the default. Code signing stays off. Tests run on an iPhone 17 Pro Max simulator (6.9-inch, 1320×2868), including a check that tapping בראשית opens its parasha list and a search test. The store screens are then captured on an iPhone 17 Pro simulator (1206×2622) and on an iPad Pro 13-inch simulator (2064×2752). Each of those two simulators is booted and waited on with `xcrun simctl bootstatus` before its screenshots.
 
 Two artifacts are uploaded:
 
 - `simulator-screenshots` — home and a book's parasha list, in light and dark appearance, on both devices, so the light status icons on the dark bar and the full-width dividers can be checked under the iOS 26 SDK.
-- `app-store-screenshots` — Hebrew UI at the 6.9-inch and 13-inch sizes: home, the weekly reading, a parasha list, the reader, search, and settings. Alpha is removed so the files match the App Store's opaque PNG rule.
+- `app-store-screenshots` — Hebrew UI at 1206×2622, 1320×2868, and 2064×2752: home, the weekly reading, a parasha list, the reader, search, and settings. Alpha is removed so the files match the App Store's opaque PNG rule.
 
 A pull request from this repository is covered by the branch push, so the workflow does not start a second macOS run for it. Before the iPad tests, the workflow boots that simulator and waits with `xcrun simctl bootstatus <udid> -b`.
 

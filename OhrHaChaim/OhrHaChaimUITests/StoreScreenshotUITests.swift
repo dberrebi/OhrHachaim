@@ -53,9 +53,13 @@ final class StoreScreenshotUITests: XCTestCase {
         prefix == "ipad"
     }
 
-    /// Point width of an iPhone 17 Pro Max is 440. The 13-inch iPad is much wider.
+    /// Point widths: iPhone 17 Pro is 402, iPhone 17 Pro Max is 440, and the 13-inch iPad is much wider.
+    /// Separate prefixes keep the 1206×2622 and 1320×2868 captures from overwriting each other.
     private var prefix: String {
-        app.windows.firstMatch.frame.width >= 700 ? "ipad" : "iphone"
+        let width = app.windows.firstMatch.frame.width
+        if width >= 700 { return "ipad" }
+        if width >= 420 { return "iphone69" }
+        return "iphone"
     }
 
     private func launch(appearance: String) {
@@ -67,27 +71,36 @@ final class StoreScreenshotUITests: XCTestCase {
 
     private func tap(_ identifier: String) {
         let element = app.descendants(matching: .any)[identifier]
-        for _ in 0..<6 {
-            if element.exists && element.isHittable {
-                element.tap()
-                return
+        if element.waitForExistence(timeout: 5), element.isHittable {
+            element.tap()
+            return
+        }
+        for swipeUp in [true, false] {
+            for _ in 0..<4 {
+                if element.exists, element.isHittable {
+                    element.tap()
+                    return
+                }
+                if swipeUp {
+                    app.swipeUp()
+                } else {
+                    app.swipeDown()
+                }
             }
-            app.swipeUp()
         }
         XCTFail("Missing \(identifier)")
     }
 
+    /// On the iPhone the home list is under the stack. Keep tapping Back until it is showing.
     private func pop() {
-        let buttons = app.navigationBars.buttons
-        XCTAssertTrue(buttons.firstMatch.waitForExistence(timeout: 5))
-        for index in 0..<buttons.count {
-            let button = buttons.element(boundBy: index)
-            let label = button.label
-            if label == "שיתוף" || label == "Share" { continue }
-            button.tap()
-            return
+        let home = app.descendants(matching: .any)["home.search"]
+        for _ in 0..<4 {
+            if home.exists, home.isHittable { return }
+            let back = app.navigationBars.buttons["BackButton"]
+            if !back.waitForExistence(timeout: 3) { break }
+            back.tap()
         }
-        XCTFail("No back button")
+        XCTAssertTrue(home.waitForExistence(timeout: 8), "Did not return to the home list")
     }
 
     private func waitForReader() {
