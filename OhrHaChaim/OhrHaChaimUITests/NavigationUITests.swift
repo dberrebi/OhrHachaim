@@ -69,21 +69,25 @@ final class WalkthroughUITests: XCTestCase {
         }
         pause(6) // A passage counts as read after it stays at the top for 4 seconds.
 
+        // Each look is timed from the tap that opens the screen to the tap on Back,
+        // which is how long the app sees it on screen. Returning home is not counted.
         goBack()
         let glanceStart = Date()
         tap("parasha.intro")
         pause(2)
         shot("authors-introduction")
-        goHome()
+        goBack()
         let introGlance = Date().timeIntervalSince(glanceStart)
+        goHome()
 
         shot("home-after-reading")
         let weeklyStart = Date()
         tap("home.weekly")
         pause(2)
         shot("this-week")
-        goHome()
+        goBack()
         let weeklyGlance = Date().timeIntervalSince(weeklyStart)
+        goHome()
 
         // A short look at the introduction and at This week is not a read:
         // Resume must still point to Bereshit. Its subtitle reads
@@ -121,13 +125,11 @@ final class WalkthroughUITests: XCTestCase {
 
         goHome()
         tap("home.search")
-        let hit = app.descendants(matching: .any)
+        let hits = app.descendants(matching: .any)
             .matching(NSPredicate(format: "identifier BEGINSWITH %@", "search.hit."))
-            .firstMatch
-        if hit.waitForExistence(timeout: Self.patience) {
+        if hits.firstMatch.waitForExistence(timeout: Self.patience) {
             shot("search")
-            hit.tap()
-            pause(2)
+            openDeepSearchResult(in: hits)
             shot("search-result-opened")
         } else {
             XCTFail("No search results for the pre-filled query")
@@ -183,6 +185,42 @@ final class WalkthroughUITests: XCTestCase {
     /// How long to wait for a screen or a row. Hosted CI Macs are sometimes slow
     /// enough that a single accessibility query takes many seconds.
     private static let patience: TimeInterval = 30
+
+    /// Opens the search result for Emor 22:12, deep inside a long parasha, and
+    /// checks that its passage is on screen near the top. The reader builds rows
+    /// lazily and estimates the heights of rows it has not built, so a jump this
+    /// far is where it could land short.
+    private func openDeepSearchResult(in hits: XCUIElementQuery) {
+        let phrase = "יפחת אורה" // From the Emor 22:12 passage that the query "אורה" finds.
+        let deepHit = hits.matching(NSPredicate(format: "label CONTAINS %@", phrase)).firstMatch
+        for _ in 0..<3 where !(deepHit.exists && deepHit.isHittable) {
+            app.swipeUp()
+            pause(0.5)
+        }
+        guard deepHit.exists && deepHit.isHittable else {
+            XCTFail("No search result for Emor 22:12 (\(phrase))")
+            hits.firstMatch.tap()
+            pause(2)
+            return
+        }
+        deepHit.tap()
+        _ = deepHit.waitForNonExistence(timeout: Self.patience)
+        let passage = app.descendants(matching: .any)
+            .matching(NSPredicate(format: "label CONTAINS %@", phrase))
+            .firstMatch
+        guard passage.waitForExistence(timeout: Self.patience * 2) else {
+            XCTFail("Opening the Emor 22:12 result did not show its passage")
+            return
+        }
+        pause(2) // Let the reader's second scroll settle.
+        let screenHeight = app.windows.firstMatch.frame.height
+        let top = passage.frame.minY
+        XCTAssertTrue(passage.isHittable, "The Emor 22:12 passage is not on screen")
+        XCTAssertTrue(
+            top >= 0 && top < screenHeight * 0.5,
+            String(format: "The Emor 22:12 passage starts at %.0f of %.0f points, not near the top", top, screenHeight)
+        )
+    }
 
     private func wait(for identifier: String) {
         XCTAssertTrue(element(identifier).waitForExistence(timeout: Self.patience), "Missing \(identifier)")
