@@ -93,9 +93,12 @@ final class WalkthroughUITests: XCTestCase {
         // Resume must still point to Bereshit. Its subtitle reads
         // "בראשית · פרק … · פסוק …"; the book row is plain "בראשית".
         // The app counts an unscrolled screen as read after 20 seconds, so the
-        // check only holds when both looks really were short. On a very slow
-        // simulator they may not be, and then the check is reported, not failed.
-        if introGlance < 15 && weeklyGlance < 15 {
+        // check only holds when both looks really were short. Each measured look
+        // includes the tap and the second after Back, so it is longer than the
+        // time on screen; 18 seconds measured stays under the app's 20. On a very
+        // slow simulator the looks may be longer, and then the check is reported,
+        // not failed.
+        if introGlance < 18 && weeklyGlance < 18 {
             let savedPlace = app.descendants(matching: .any)
                 .matching(NSPredicate(format: "label CONTAINS %@", "בראשית ·"))
                 .firstMatch
