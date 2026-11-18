@@ -20,7 +20,9 @@ jobs:
     # The step below still selects an Xcode 26 app, so a later default of Xcode 27
     # does not change this build. Deployment stays iOS 17.
     runs-on: macos-26
-    timeout-minutes: 45
+    # Three simulators boot in turn for the store screenshots, and a fresh boot
+    # takes about 10 minutes on a hosted runner, so a full run is close to an hour.
+    timeout-minutes: 75
     steps:
       - uses: actions/checkout@v4
 
